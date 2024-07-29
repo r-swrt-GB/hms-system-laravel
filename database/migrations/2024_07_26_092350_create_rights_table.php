@@ -17,7 +17,7 @@ class CreateRightsTable extends Migration
             $table->id();
             $table->string('name',255);
             $table->string('slug',100);
-            $table->enum('scope', ['global'])->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

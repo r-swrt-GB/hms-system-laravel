@@ -1,12 +1,10 @@
 <?php
 
-use App\Models\User;
-use App\Models\Right;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserRightTable extends Migration
+class CreateRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,9 +13,12 @@ class CreateUserRightTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_right', function (Blueprint $table) {
-            $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Right::class);
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('slug',100);
+            $table->string('description')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -28,6 +29,6 @@ class CreateUserRightTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_right');
+        Schema::dropIfExists('roles');
     }
 }
