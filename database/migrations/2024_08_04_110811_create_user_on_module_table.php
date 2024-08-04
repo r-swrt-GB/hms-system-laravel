@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('module_id')->references('id')->on('modules')->onDelete('cascade');
 
-            $table->unique(['user_id', 'submission_id']);
+            $table->unique(['user_id', 'module_id']);
         });
     }
 
