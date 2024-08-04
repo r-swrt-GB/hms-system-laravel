@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('table_user_on_module', function (Blueprint $table) {
+        Schema::create('modules', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); //Foreign key to User table
-            $table->foreignId('module_id')->constrained('modules')->onDelete('cascade'); //Foreign Key to Module table
+            $table->string('module_name');
+            $table->string('code')->unique();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('table_user_on_module');
+        Schema::dropIfExists('modules');
     }
 };
