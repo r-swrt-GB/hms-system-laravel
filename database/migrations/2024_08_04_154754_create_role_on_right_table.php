@@ -12,8 +12,8 @@ class CreateUserRolesTable extends Migration
      * @return void
      */
     public function up()
-    {
-<<<<<<<< HEAD:database/migrations/2024_08_04_120203_create_user_role_table.php
+    {HEAD:
+    }database/migrations/2024_08_04_120203_create_user_role_table.php
         Schema::create('user_role', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id'); // Foreign key for users
             $table->unsignedBigInteger('role_id'); // Foreign key for roles
