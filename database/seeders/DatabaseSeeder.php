@@ -18,6 +18,10 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ModuleSeeder::class,
             AssignmentsSeeder::class,
+            RoleSeeder::class,
+            RightSeeder::class,
+            RoleOnRightSeeder::class,
+            UserOnRole::class,
         ]);
     }
 }
