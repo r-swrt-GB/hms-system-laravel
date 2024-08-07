@@ -28,12 +28,12 @@ class Role extends Model
 
     public function users()
     {
-        return $this->belongsToMany('User', 'user_role');
+        return $this->belongsToMany(User::class, 'user_role');
     }
 
     public function rights()
     {
-        return $this->belongsToMany('Right','role_on_right');
+        return $this->belongsToMany(Right::class,'role_on_right');
     }
 
 }

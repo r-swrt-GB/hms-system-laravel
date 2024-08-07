@@ -26,6 +26,6 @@ class Right extends Model
 
     public function roles()
     {
-        return $this->belongsToMany('Role', 'role_on_right');
+        return $this->belongsToMany(Role::class, 'role_on_right');
     }
 }

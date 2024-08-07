@@ -62,16 +62,16 @@ class User extends Authenticatable
 
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany('Role', 'user_role');
+        return $this->belongsToMany(Role::class, 'user_role');
     }
 
     public function submissions(): BelongsToMany
     {
-        return $this->belongsToMany('Submission', 'user_submissions');
+        return $this->belongsToMany(Submission::class, 'user_submissions');
     }
 
     public function modules(): BelongsToMany
     {
-        return $this->belongsToMany('Module', 'user_modules');
+        return $this->belongsToMany(Module::class, 'user_modules');
     }
 }
