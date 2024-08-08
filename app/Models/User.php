@@ -74,4 +74,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Module::class, 'user_modules');
     }
+
+    public function assignments(): BelongsToMany
+    {
+        return $this->belongsToMany(Assignment::class, 'user_assignments');
+    }
 }
