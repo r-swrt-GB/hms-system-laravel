@@ -50,6 +50,12 @@ class Submission extends Model
     /**
      * Get the user that owns the submission
      */
+
+    public  function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function user(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_submissions');
