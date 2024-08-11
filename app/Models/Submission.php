@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-
 class Submission extends Model
 {
     use HasFactory, Notifiable;
@@ -35,7 +34,10 @@ class Submission extends Model
     protected
         $fillable = [
         'submission_date',
+        'assignment_id',
         'grade',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -56,7 +58,7 @@ class Submission extends Model
      * Get the user that owns the submission
      */
 
-    public  function comments()
+    public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
@@ -66,7 +68,7 @@ class Submission extends Model
         return $this->belongsToMany(User::class, 'user_submissions');
     }
 
-    public function assignments()
+    public function assignments(): BelongsToMany
     {
         return $this->belongsToMany(Assignment::class);
     }

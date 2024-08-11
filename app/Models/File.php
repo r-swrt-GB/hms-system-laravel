@@ -11,26 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * App\Models\file
- *
- * @property int $id
- * @property string $filename
- * @property string $mimetype
- * @property string $extension
- * @property int $size
- * @property string $disk
- * @property string $base_url
- * @property string $key
- * @property string $thumbnail_key
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- */
-
-/**
  * App\Models\File
  *
  * @property int $id
- * @property int $submission_id
  * @property string $filename
  * @property string $mimetype
  * @property string $extension
@@ -55,6 +38,7 @@ class File extends Model
 
     protected $fillable = [
         'filename',
+        'submission_id',
         'mimetype',
         'extension',
         'size',
@@ -62,20 +46,26 @@ class File extends Model
         'base_url',
         'key',
         'thumbnail_key',
+        'created_at',
+        'updated_at',
     ];
 
+    /**
+     * get the attributes that should be cast
+     *
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
             'submission_id' => 'integer',
+            'size' => 'integer',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
     }
 
-    protected $guarded = [];
-
-    public function submissions()
+    public function submissions(): BelongsToMany
     {
         return $this->belongsToMany(Submission::class);
     }

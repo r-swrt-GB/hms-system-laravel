@@ -5,8 +5,10 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 
 /**
@@ -37,15 +39,33 @@ class Assignment extends Model
     protected $fillable = [
         'title',
         'description',
+        'min_videos',
+        'max_videos',
+        'max_video_length',
+        'max_grade',
+        'open_date',
+        'due_date',
+        'created_at',
+        'updated_at',
     ];
 
     public function users(): BelongsToMany
     {
-       return $this->belongsToMany(User::class, 'user_assignments');
+        return $this->belongsToMany(User::class, 'user_assignments');
     }
 
-    public function submissions()
+    public function submissions(): HasMany
     {
         return $this->hasMany(Submission::class);
+    }
+
+    public function module(): BelongsTo
+    {
+        return $this->belongsTo(Module::class);
+    }
+
+    public function created_by(): HasOne
+    {
+        return $this->hasOne(User::class);
     }
 }

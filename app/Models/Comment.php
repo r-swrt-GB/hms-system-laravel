@@ -11,8 +11,6 @@ use Illuminate\Support\Carbon;
  * App\Models\Comments
  *
  * @property int $id
- * @property int $user_id
- * @property int $submission_id
  * @property string $comment_text
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -29,6 +27,10 @@ class Comment extends Model
      */
     protected $fillable = [
         'comment_text',
+        'user_id',
+        'submission_id',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -54,7 +56,7 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function submission()
+    public function submission(): BelongsTo
     {
         return $this->belongsTo(Submission::class);
     }
