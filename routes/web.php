@@ -3,6 +3,7 @@
 use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ModuleManagementController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\StudentManagementController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/assignments/create', [AssignmentsController::class, 'getCreateAssignmentPage'])->name('pages.create-assignments');
     Route::get('/assignments/{assignment}', [AssignmentsController::class, 'getViewAssignmentPage'])->name('pages.assignment');
     Route::get('/management/students', [StudentManagementController::class, 'getStudentManagementPage'])->name('pages.management-students');
+
+    Route::get('/management/modules', [ModuleManagementController::class, 'index'])->name('pages.management-modules');
+
 
     // Lecturer-specific routes
     Route::middleware('role:lecturer')->group(function () {
