@@ -4,6 +4,7 @@ use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\StudentManagementController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -13,6 +14,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/assignments/create', [AssignmentsController::class, 'getCreateAssignmentPage'])->name('pages.create-assignments');
     Route::get('/assignments/{assignment}', [AssignmentsController::class, 'getViewAssignmentPage'])->name('pages.assignment');
+    Route::get('/management/students', [StudentManagementController::class, 'getStudentManagementPage'])->name('pages.management-students');
 
     // Lecturer-specific routes
     Route::middleware('role:lecturer')->group(function () {
