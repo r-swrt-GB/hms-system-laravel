@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class StudentManagementController extends Controller
 {
-    public function getStudentManagementPage(Request $request)
+    public function index(Request $request)
     {
         return Inertia::render('StudentManagementPage');
     }

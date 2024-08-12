@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LecturerManagementController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ModuleManagementController;
 use App\Http\Controllers\RegisterController;
@@ -15,10 +16,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/assignments/create', [AssignmentsController::class, 'getCreateAssignmentPage'])->name('pages.create-assignments');
     Route::get('/assignments/{assignment}', [AssignmentsController::class, 'getViewAssignmentPage'])->name('pages.assignment');
-    Route::get('/management/students', [StudentManagementController::class, 'getStudentManagementPage'])->name('pages.management-students');
+    Route::get('/management/students', [StudentManagementController::class, 'index'])->name('pages.management-students');
 
     Route::get('/management/modules', [ModuleManagementController::class, 'index'])->name('pages.management-modules');
-
+    Route::get('/management/lecturer', [LecturerManagementController::class, 'index'])->name('pages.management-lecturer');
 
     // Lecturer-specific routes
     Route::middleware('role:lecturer')->group(function () {
