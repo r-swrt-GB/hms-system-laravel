@@ -3,6 +3,7 @@
 use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ModuleManagementController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -12,6 +13,8 @@ use Inertia\Inertia;
 Route::middleware('auth')->group(function () {
 
     Route::get('/assignments/create', [AssignmentsController::class, 'getCreateAssignmentPage'])->name('pages.create-assignments');
+
+    Route::get('/management/modules', [ModuleManagementController::class, 'index'])->name('pages.management-modules');
 
 
     // Lecturer-specific routes
