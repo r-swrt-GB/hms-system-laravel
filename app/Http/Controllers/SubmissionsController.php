@@ -8,6 +8,10 @@ use Inertia\Inertia;
 class SubmissionsController extends Controller
 {
     public function index(Request $request) {
-        return Inertia::render('SubmissionsPage/SubmissionsPage');
+        return Inertia::render('Submissions/Submissions');
+    }
+
+    public function getSubmissionPage(Request $request) {
+        return Inertia::render('Submissions/SubmissionPage');
     }
 }

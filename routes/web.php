@@ -26,12 +26,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/assignments/create', [AssignmentsController::class, 'getCreateAssignmentPage'])->name('pages.create-assignments');
     Route::get('/assignments/{assignment}', [AssignmentsController::class, 'getViewAssignmentPage'])->name('pages.assignment');
     Route::get('/management/students', [StudentManagementController::class, 'index'])->name('pages.management-students');
-
     Route::get('/management/modules', [ModuleManagementController::class, 'index'])->name('pages.management-modules');
-
     Route::get('/management/admins', [AdminManagementController::class, 'index'])->name('pages.management-admins');
-
     Route::get('/management/lecturer', [LecturerManagementController::class, 'index'])->name('pages.management-lecturer');
+    Route::get('/submissions/{submission}', [AssignmentsController::class, 'getSubmissionPage'])->name('pages.submission-page');
 
 
     // Lecturer-specific routes
