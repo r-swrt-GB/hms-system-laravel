@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminManagementController;
 use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
@@ -18,7 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/management/students', [StudentManagementController::class, 'getStudentManagementPage'])->name('pages.management-students');
 
     Route::get('/management/modules', [ModuleManagementController::class, 'index'])->name('pages.management-modules');
-
+    Route::get('/management/admins', [AdminManagementController::class, 'index'])->name('pages.management-admins');
 
     // Lecturer-specific routes
     Route::middleware('role:lecturer')->group(function () {
