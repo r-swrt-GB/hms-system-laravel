@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SubmissionsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -10,9 +13,11 @@ use Inertia\Inertia;
 // Authenticated routes
 Route::middleware('auth')->group(function () {
 
-    // Routes for all authenticated users (students, lecturers, and admins)
-//    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-//    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::get('/assignments', [AssignmentsController::class, 'index'])->name('pages.assignments');
+
+    Route::get('/', [LandingPageController::class, 'index'])->name('pages.landing-page');
+
+    Route::get('/submissions', [SubmissionsController::class, 'index'])->name('pages.submissions-page');
 
     // Lecturer-specific routes
     Route::middleware('role:lecturer')->group(function () {
