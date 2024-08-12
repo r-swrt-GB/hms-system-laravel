@@ -13,6 +13,7 @@ use Inertia\Inertia;
 Route::middleware('auth')->group(function () {
 
     Route::get('/assignments/create', [AssignmentsController::class, 'getCreateAssignmentPage'])->name('pages.create-assignments');
+    Route::get('/assignments/{assignment}', [AssignmentsController::class, 'getViewAssignmentPage'])->name('pages.assignment');
 
     Route::get('/management/modules', [ModuleManagementController::class, 'index'])->name('pages.management-modules');
 
