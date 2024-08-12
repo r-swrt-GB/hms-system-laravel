@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
@@ -10,9 +11,7 @@ use Inertia\Inertia;
 // Authenticated routes
 Route::middleware('auth')->group(function () {
 
-    // Routes for all authenticated users (students, lecturers, and admins)
-//    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-//    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::get('/assignments/{assignment}', [AssignmentsController::class, 'getAssignmentsPage'])->name('dashboard');
 
     // Lecturer-specific routes
     Route::middleware('role:lecturer')->group(function () {
