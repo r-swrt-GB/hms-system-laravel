@@ -11,7 +11,8 @@ use Inertia\Inertia;
 // Authenticated routes
 Route::middleware('auth')->group(function () {
 
-    Route::get('/assignments/{assignment}', [AssignmentsController::class, 'getAssignmentsPage'])->name('dashboard');
+    Route::get('/assignments/create', [AssignmentsController::class, 'getCreateAssignmentPage'])->name('pages.create-assignments');
+    Route::get('/assignments/{assignment}', [AssignmentsController::class, 'getViewAssignmentPage'])->name('pages.assignment');
 
     // Lecturer-specific routes
     Route::middleware('role:lecturer')->group(function () {

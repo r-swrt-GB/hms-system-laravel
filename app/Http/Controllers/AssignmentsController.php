@@ -12,4 +12,8 @@ class AssignmentsController extends Controller
     {
         return Inertia::render('AssignmentPage');
     }
+    public function getCreateAssignmentPage(Request $request)
+    {
+        return Inertia::render('CreateAssignmentsPage');
+    }
 }
