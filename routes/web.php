@@ -1,11 +1,16 @@
 <?php
 
+
+use App\Http\Controllers\AdminManagementController;
 use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\LecturerManagementController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ModuleManagementController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SubmissionsController;
+use App\Http\Controllers\StudentManagementController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,6 +23,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [LandingPageController::class, 'index'])->name('pages.landing-page');
 
     Route::get('/submissions', [SubmissionsController::class, 'index'])->name('pages.submissions-page');
+    Route::get('/assignments/create', [AssignmentsController::class, 'getCreateAssignmentPage'])->name('pages.create-assignments');
+    Route::get('/assignments/{assignment}', [AssignmentsController::class, 'getViewAssignmentPage'])->name('pages.assignment');
+    Route::get('/management/students', [StudentManagementController::class, 'index'])->name('pages.management-students');
+
+    Route::get('/management/modules', [ModuleManagementController::class, 'index'])->name('pages.management-modules');
+
+    Route::get('/management/admins', [AdminManagementController::class, 'index'])->name('pages.management-admins');
+
+    Route::get('/management/lecturer', [LecturerManagementController::class, 'index'])->name('pages.management-lecturer');
+
 
     // Lecturer-specific routes
     Route::middleware('role:lecturer')->group(function () {
