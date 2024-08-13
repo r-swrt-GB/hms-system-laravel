@@ -9,6 +9,6 @@ class LecturerManagementController extends Controller
 {
     public function index(Request $request)
     {
-        return Inertia::render('LecturerManagementPage');
+        return Inertia::render('Management/LecturerManagementPage');
     }
 }

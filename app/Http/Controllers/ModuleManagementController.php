@@ -9,6 +9,6 @@ class ModuleManagementController extends Controller
 {
     public function index(Request $request)
     {
-        return Inertia::render('ModuleManagementPage');
+        return Inertia::render('Management/ModuleManagementPage');
     }
 }

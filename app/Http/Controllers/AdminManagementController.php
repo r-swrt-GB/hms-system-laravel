@@ -9,6 +9,6 @@ class AdminManagementController extends Controller
 {
     public function index(Request $request)
     {
-        return Inertia::render('AdminManagementPage');
+        return Inertia::render('Management/AdminManagementPage');
     }
 }
