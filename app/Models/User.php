@@ -81,5 +81,8 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-
+    public function notifications(): BelongsToMany
+    {
+        return $this->belongsToMany(Notification::class, 'user_notifications');
+    }
 }

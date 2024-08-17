@@ -68,4 +68,9 @@ class Assignment extends Model
     {
         return $this->hasOne(User::class);
     }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
 }
