@@ -39,6 +39,7 @@ class Assignment extends Model
     protected $fillable = [
         'title',
         'description',
+        'type',
         'min_videos',
         'max_videos',
         'max_video_length',
@@ -48,6 +49,9 @@ class Assignment extends Model
         'created_at',
         'updated_at',
     ];
+
+    const TYPE_INDIVIDUAL = 'individual';
+    const TYPE_GROUP = 'group';
 
     public function users(): BelongsToMany
     {
@@ -72,5 +76,15 @@ class Assignment extends Model
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function isIndividual()
+    {
+        return $this->type === self::TYPE_INDIVIDUAL;
+    }
+
+    public function isGroup()
+    {
+        return $this->type === self::TYPE_GROUP;
     }
 }

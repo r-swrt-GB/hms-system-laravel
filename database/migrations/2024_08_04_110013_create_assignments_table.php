@@ -15,13 +15,14 @@ return new class extends Migration {
             $table->unsignedBigInteger('module_id');
             $table->unsignedBigInteger('user_id');
             $table->string('title');
-            $table->string('description')->nullable();
+            $table->string('description');
+            $table->enum('type', ['individual', 'group'])->default('individual');
             $table->integer('min_videos')->default(0);
             $table->integer('max_videos')->default(0);
             $table->integer('max_video_length')->default(0);
             $table->integer('max_grade')->default(0);
-            $table->dateTime('open_date')->nullable();
-            $table->dateTime('due_date')->nullable();
+            $table->dateTime('open_date');
+            $table->dateTime('due_date');
 
             $table->foreign('module_id')->references('id')->on('modules')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

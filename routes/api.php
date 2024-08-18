@@ -1,28 +1,24 @@
 <?php
 
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LoginController;
+
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RegisterController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\SubmissionsController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 // Authenticated requests
 Route::middleware('auth')->group(function () {
 
-    // Admin requests
-    Route::middleware('admin')->group(function () {
+    Route::prefix('/modules/{module}')->group(function () {
 
-    });
-
-    // Lecturer requests
-    Route::middleware('lecturer')->group(function () {
-
-    });
-
-    // Student requests
-    Route::middleware('student')->group(function () {
+        //Submissions
+        //Create
+        Route::post('/assignments/{assignment}/submissions/create', [SubmissionsController::class, 'create'])->name('api.submissions.create');
+        //Update
+        Route::patch('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'update'])->name('api.submissions.update');
+        //Delete
+        Route::delete('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'delete'])->name('api.submissions.delete');
+        //Read
+        Route::get('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'read'])->name('api.submissions.read');
 
     });
 
