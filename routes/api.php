@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionsController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,16 @@ Route::middleware('auth')->group(function () {
         Route::delete('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'delete'])->name('api.submissions.delete');
         //Read
         Route::get('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'read'])->name('api.submissions.read');
+
+        //Assignments
+        //Create
+        Route::post('/assignments/create', [AssignmentsController::class, 'create'])->name('api.assignments.create');
+        //Update
+        Route::patch('/assignments/{assignment}', [AssignmentsController::class, 'update'])->name('api.assignments.update');
+        //Delete
+        Route::delete('/assignments/{assignment}', [AssignmentsController::class, 'delete'])->name('api.assignments.delete');
+        //Read
+        Route::get('/assignments/{assignment}', [AssignmentsController::class, 'read'])->name('api.assignments.read');
 
     });
 

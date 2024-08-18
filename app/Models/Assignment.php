@@ -78,12 +78,12 @@ class Assignment extends Model
         return $this->hasMany(Notification::class);
     }
 
-    public function isIndividual()
+    public function isIndividual(): bool
     {
         return $this->type === self::TYPE_INDIVIDUAL;
     }
 
-    public function isGroup()
+    public function isGroup(): bool
     {
         return $this->type === self::TYPE_GROUP;
     }
