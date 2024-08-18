@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('user_on_notification', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('notification_id');
+            $table->unsignedBigInteger('module_id');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('notification_id')->references('id')->on('notifications')->onDelete('cascade');
+            $table->foreign('module_id')->references('id')->on('modules')->onDelete('cascade');
 
-            $table->unique(['user_id', 'notification_id']);
+            $table->unique(['user_id', 'module_id']);
 
             $table->boolean('read')->default(false);
         });

@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\AssignmentsController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionsController;
@@ -41,6 +42,16 @@ Route::middleware('auth')->group(function () {
         Route::delete('/assignments/{assignment}/groups/{group}', [GroupController::class, 'delete'])->name('api.groups.delete');
         //Read
         Route::get('/assignments/{assignment}/groups/{group}', [GroupController::class, 'read'])->name('api.groups.read');
+
+        //Comment
+        //Create
+        Route::post('/assignments/{assignment}/submissions/{submission}/comment/create', [CommentController::class, 'create'])->name('api.comments.create');
+        //Update
+        Route::patch('/assignments/{assignment}/submissions/{submission}/comments/{comment}', [CommentController::class, 'update'])->name('api.comments.update');
+        //Delete
+        Route::delete('/assignments/{assignment}/submissions/{submission}/comments/{comment}', [SubmissionsController::class, 'delete'])->name('api.submissions.delete');
+        //Read
+        Route::get('/assignments/{assignment}/submission/{submissions}/comments/{comment}', [AssignmentsController::class, 'read'])->name('api.assignments.read');
     });
 
 
