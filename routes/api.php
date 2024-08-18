@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\AssignmentsController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionsController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,15 @@ Route::middleware('auth')->group(function () {
         //Read
         Route::get('/assignments/{assignment}', [AssignmentsController::class, 'read'])->name('api.assignments.read');
 
+        //Groups
+        //Create
+        Route::post('/assignments/{assignment}/groups/create', [GroupController::class, 'create'])->name('api.groups.create');
+        //Update
+        Route::patch('/assignments/{assignment}/groups/{group}', [GroupController::class, 'update'])->name('api.groups.update');
+        //Delete
+        Route::delete('/assignments/{assignment}/groups/{group}', [GroupController::class, 'delete'])->name('api.groups.delete');
+        //Read
+        Route::get('/assignments/{assignment}/groups/{group}', [GroupController::class, 'read'])->name('api.groups.read');
     });
 
 
