@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Assignment;
 use App\Models\Comment;
 use App\Models\Submission;
-use App\Models\Group;
 use App\Models\Module;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PhpParser\Node\Expr\AssignOp\Mod;
 
 class CommentController extends Controller
 {
@@ -52,8 +50,6 @@ class CommentController extends Controller
      */
     public function update(Request $request, Module $module, Assignment $assignment, Submission $submission, Comment $comment)
     {
-        $this->authorize('update', $comment);
-
         $validatedData = $request->validate([
             'comment_text' => 'required|string',
         ]);
@@ -68,8 +64,6 @@ class CommentController extends Controller
      */
     public function delete(Request $request, Module $module, Assignment $assignment, Submission $submission, Comment $comment)
     {
-        $this->authorize('delete', $comment);
-
         $comment->delete();
 
         return response()->json(['comment' => $comment, 'message' => 'Comment deleted successfully.']);

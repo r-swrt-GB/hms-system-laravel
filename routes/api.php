@@ -12,11 +12,24 @@ use Illuminate\Support\Facades\Route;
 // Authenticated requests
 Route::middleware('auth')->group(function () {
 
-    Route::prefix('/modules/{module}')->group(function () {
+
+    //Module
+    //Create
+    Route::post('/create', [ModuleManagementController::class, 'create'])->name('api.modules.create');
+    // Update
+    Route::patch('/{module}', [ModuleManagementController::class, 'update'])->name('api.modules.update');
+    // Delete
+    Route::delete('/{module}', [ModuleManagementController::class, 'delete'])->name('api.modules.delete');
+    // Read
+    Route::get('/{module}', [ModuleManagementController::class, 'read'])->name('api.modules.read');
+    // List
+    Route::get('/', [ModuleManagementController::class, 'index'])->name('api.modules.index');
+
+    Route::prefix('api/modules/{module}')->group(function () {
 
         //Submissions
         //Create
-        Route::post('/assignments/{assignment}/submissions/create', [SubmissionsController::class, 'create'])->name('api.submissions.create');
+        Route::post('api/assignments/{assignment}/submissions/create', [SubmissionsController::class, 'create'])->name('api.submissions.create');
         //Update
         Route::patch('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'update'])->name('api.submissions.update');
         //Delete
@@ -50,21 +63,8 @@ Route::middleware('auth')->group(function () {
         //Update
         Route::patch('/assignments/{assignment}/submissions/{submission}/comments/{comment}', [CommentController::class, 'update'])->name('api.comments.update');
         //Delete
-        Route::delete('/assignments/{assignment}/submissions/{submission}/comments/{comment}', [SubmissionsController::class, 'delete'])->name('api.submissions.delete');
+        Route::delete('/assignments/{assignment}/submissions/{submission}/comments/{comment}', [CommentController::class, 'delete'])->name('api.comments.delete');
         //Read
-        Route::get('/assignments/{assignment}/submission/{submissions}/comments/{comment}', [AssignmentsController::class, 'read'])->name('api.assignments.read');
-
-        //Module
-        //Create
-        Route::post('/create', [ModuleManagementController::class, 'create'])->name('api.modules.create');
-        // Update
-        Route::patch('/{module}', [ModuleManagementController::class, 'update'])->name('api.modules.update');
-        // Delete
-        Route::delete('/{module}', [ModuleManagementController::class, 'delete'])->name('api.modules.delete');
-        // Read
-        Route::get('/{module}', [ModuleManagementController::class, 'read'])->name('api.modules.read');
-        // List
-        Route::get('/', [ModuleManagementController::class, 'index'])->name('api.modules.index');
     });
 
 
