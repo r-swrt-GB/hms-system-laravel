@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Module;
 use App\Models\Notification;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,11 +20,18 @@ class NotificationController extends Controller
 
         $notification = Notification::create($validatedData);
 
-        $notification -> user_id = Auth::user() -> id;
-        $notification -> module_id = $module -> id;
-        $notification -> save();
+        // Associate notification with the module and user
+        $notification->user_id = Auth::user()->id;
+        $notification->module_id = $module->id;
+        $notification->save();
 
-        return response() -> json(['message' => 'Notification created successfully.']);
+        // Create entry in user_notifications
+        UserNotification::create([
+            'user_id' => Auth::user()->id,
+            'notification_id' => $notification->id,
+        ]);
+
+        return response()->json(['message' => 'Notification created successfully.']);
     }
 
     public function update(Request $request, Module $module, Notification $notification)
@@ -34,33 +42,50 @@ class NotificationController extends Controller
             'type' => 'required|string',
         ]);
 
-        $notification -> update($validatedData);
+        $notification->update($validatedData);
 
-        $notification -> user_id = Auth::user() -> id;
-        $notification -> module_id = $module -> id;
-        $notification -> save();
+        // Update association with module and user
+        $notification->user_id = Auth::user()->id;
+        $notification->module_id = $module->id;
+        $notification->save();
 
-        return response() -> json(['message' => 'Notification updated successfully.']);
+        return response()->json(['message' => 'Notification updated successfully.']);
     }
 
     public function delete(Request $request, Module $module, Notification $notification)
     {
-        $notification -> delete();
+        // Delete entry from user_notifications
+        UserNotification::where('notification_id', $notification->id)
+            ->where('user_id', Auth::user()->id)
+            ->delete();
 
-        return response() -> json(['message' => 'Notification deleted successfully.']);
+        $notification->delete();
 
+        return response()->json(['message' => 'Notification deleted successfully.']);
     }
 
     public function read(Request $request, Module $module, Notification $notification)
     {
-        $notification = $this -> getFullNotification($notification);
+        $notification = $this->getFullNotification($notification);
 
-        return response() -> json(['notification' => $notification]);
+        return response()->json(['notification' => $notification]);
     }
 
     public function getFullNotification(Notification $notification)
     {
-        return $notification->load(['user', 'module', 'title', 'message','type']);
+        return $notification->load(['user', 'module']);
     }
-    //
+
+    public function markAsRead(Notification $notification)
+    {
+        $userNotification = UserNotification::where('notification_id', $notification->id)
+            ->where('user_id', Auth::user()->id)
+            ->firstOrFail();
+
+        $userNotification->read_at = now();
+        $userNotification->save();
+
+        return response()->json(['message' => 'Notification marked as read.']);
+    }
 }
+

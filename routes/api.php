@@ -76,7 +76,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/notifications/{notification}', [NotificationController::class, 'delete'])->name('api.notification.delete');
         //Read
         Route::get('/notifications/{notification}', [NotificationController::class, 'read'])->name('api.notification.read');
-
+        //Read Notification
+        Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
+        });
 
 
     });
