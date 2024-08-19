@@ -5,6 +5,7 @@ use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ModuleManagementController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionsController;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +66,19 @@ Route::middleware('auth')->group(function () {
         //Delete
         Route::delete('/assignments/{assignment}/submissions/{submission}/comments/{comment}', [CommentController::class, 'delete'])->name('api.comments.delete');
         //Read
+
+        //Notification
+        //Create
+        Route::post('/notifications/create', [NotificationController::class, 'create'])->name('api.notification.create');
+        //Update
+        Route::patch('/notifications/{notification}', [NotificationController::class, 'update'])->name('api.notification.update');
+        //Delete
+        Route::delete('/notifications/{notification}', [NotificationController::class, 'delete'])->name('api.notification.delete');
+        //Read
+        Route::get('/notifications/{notification}', [NotificationController::class, 'read'])->name('api.notification.read');
+
+
+
     });
 
 
