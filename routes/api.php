@@ -4,6 +4,7 @@
 use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\ModuleManagementController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionsController;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,18 @@ Route::middleware('auth')->group(function () {
         Route::delete('/assignments/{assignment}/submissions/{submission}/comments/{comment}', [SubmissionsController::class, 'delete'])->name('api.submissions.delete');
         //Read
         Route::get('/assignments/{assignment}/submission/{submissions}/comments/{comment}', [AssignmentsController::class, 'read'])->name('api.assignments.read');
+
+        //Module
+        //Create
+        Route::post('/create', [ModuleManagementController::class, 'create'])->name('api.modules.create');
+        // Update
+        Route::patch('/{module}', [ModuleManagementController::class, 'update'])->name('api.modules.update');
+        // Delete
+        Route::delete('/{module}', [ModuleManagementController::class, 'delete'])->name('api.modules.delete');
+        // Read
+        Route::get('/{module}', [ModuleManagementController::class, 'read'])->name('api.modules.read');
+        // List
+        Route::get('/', [ModuleManagementController::class, 'index'])->name('api.modules.index');
     });
 
 
