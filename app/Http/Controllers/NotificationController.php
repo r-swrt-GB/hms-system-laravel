@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Module;
 use App\Models\Notification;
+use App\Models\User;
 use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,11 +77,9 @@ class NotificationController extends Controller
         return $notification->load(['user', 'module']);
     }
 
-    public function markAsRead(Notification $notification)
+    public function markAsRead(Notification $notification, User $user)
     {
-        $userNotification = UserNotification::where('notification_id', $notification->id)
-            ->where('user_id', Auth::user()->id)
-            ->firstOrFail();
+        $user->notifications()->sync([$notification->id]);
 
         $userNotification->read_at = now();
         $userNotification->save();
