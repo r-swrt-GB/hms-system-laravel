@@ -84,6 +84,8 @@ class ApiRoutesV1
                     Route::get('/notifications/{notification}', [NotificationController::class, 'read'])->name('api.notification.read');
                     //Read Notification
                     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
+                    //List
+                    Route::get('/notifications/', [NotificationController::class, 'list'])->name('api.notification.list');
 
                 });
             });

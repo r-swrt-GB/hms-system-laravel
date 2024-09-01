@@ -86,5 +86,11 @@ class NotificationController extends Controller
 
         return response()->json(['message' => 'Notification marked as read.']);
     }
+
+    public function list(Request $request)
+    {
+        $notifications = Notification::all();
+        return response()->json(['notifications' => $notifications]);
+    }
 }
 
