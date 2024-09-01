@@ -13,6 +13,12 @@ class ModuleManagementController extends Controller
         return Inertia::render('Management/ModuleManagementPage');
     }
 
+    public function list(Request $request)
+    {
+        $modules = Module::all();
+        return response()->json(['modules' => $modules]);
+    }
+
     public function read(Request $request, Module $module)
     {
         return response()->json(['module' => $module]);

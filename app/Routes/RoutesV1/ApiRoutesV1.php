@@ -29,7 +29,7 @@ class ApiRoutesV1
                 // Read
                 Route::get('/{module}', [ModuleManagementController::class, 'read'])->name('api.modules.read');
                 // List
-                Route::get('/', [ModuleManagementController::class, 'index'])->name('api.modules.index');
+                Route::get('/', [ModuleManagementController::class, 'list'])->name('api.modules.list');
 
 
                 Route::prefix('/{module}')->group(function () {
