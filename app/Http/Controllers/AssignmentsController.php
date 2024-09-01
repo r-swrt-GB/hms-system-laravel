@@ -17,6 +17,12 @@ class AssignmentsController extends Controller
         return Inertia::render('Assignments/AssignmentsPage');
     }
 
+    public function list(Request $request)
+    {
+        $assignments = Assignment::all();
+        return response()->json(['assignments' => $assignments]);
+    }
+
     public function getAssignmentPage(Request $request, Assignment $assignment)
     {
         $assignment = $this->loadFullAssignment($assignment);

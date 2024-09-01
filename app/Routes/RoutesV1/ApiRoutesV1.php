@@ -53,6 +53,8 @@ class ApiRoutesV1
                     Route::delete('/assignments/{assignment}', [AssignmentsController::class, 'delete'])->name('api.assignments.delete');
                     //Read
                     Route::get('/assignments/{assignment}', [AssignmentsController::class, 'read'])->name('api.assignments.read');
+                    //List
+                    Route::get('/assignments/', [AssignmentsController::class, 'list'])->name('api.assignments.list');
 
                     //Groups
                     //Create
