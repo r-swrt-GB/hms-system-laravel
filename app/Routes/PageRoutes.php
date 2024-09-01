@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Classes\Routes;
+namespace App\Routes;
 
 use App\Http\Controllers\AdminManagementController;
 use App\Http\Controllers\AssignmentsController;
@@ -9,8 +9,8 @@ use App\Http\Controllers\LecturerManagementController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ModuleManagementController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\SubmissionsController;
 use App\Http\Controllers\StudentManagementController;
+use App\Http\Controllers\SubmissionsController;
 use Illuminate\Support\Facades\Route;
 
 class PageRoutes
@@ -27,7 +27,7 @@ class PageRoutes
         Route::get('/register', [RegisterController::class, 'index'])->name('pages.register.index');
 
         // Authenticated routes
-        Route::middleware('auth')->group(function () {
+        Route::middleware('auth:sanctum')->group(function () {
 
             Route::prefix('/modules/{module}')->group(function () {
 

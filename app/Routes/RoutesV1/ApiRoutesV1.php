@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Classes\Routes\RoutesV1;
+namespace App\Routes\RoutesV1;
 
 use App\Http\Controllers\AssignmentsController;
 use App\Http\Controllers\CommentController;
@@ -16,7 +16,7 @@ class ApiRoutesV1
     public static function get()
     {
         // Authenticated requests
-        Route::middleware('auth')->group(function () {
+        Route::middleware('auth:sanctum')->group(function () {
 
             Route::prefix('/modules')->group(function () {
                 //Module

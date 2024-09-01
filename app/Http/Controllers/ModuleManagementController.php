@@ -45,7 +45,7 @@ class ModuleManagementController extends Controller
     public function delete(Request $request, Module $module)
     {
         $module->delete();
-        
+
         return response()->json(['message' => 'Module deleted successfully.']);
     }
 }

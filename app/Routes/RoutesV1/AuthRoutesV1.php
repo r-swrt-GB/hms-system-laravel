@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Classes\Routes\RoutesV1;
+namespace App\Routes\RoutesV1;
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
