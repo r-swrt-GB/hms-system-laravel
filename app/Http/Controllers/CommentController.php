@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
+    public function list(Request $request)
+    {
+        $comment = Comment::all();
+
+        return response()->json('comments', $comment);
+    }
     /**
      * Get the specified comment
      */
