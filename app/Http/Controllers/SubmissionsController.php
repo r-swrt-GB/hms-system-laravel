@@ -41,6 +41,13 @@ class SubmissionsController extends Controller
         return response()->json(['submission' => $submission]);
     }
 
+    public function getAssignmentSubmissions(Request $request, Assignment $assignment)
+    {
+        $submissions = $assignment->submissions();
+        return response()->json(['submissions' => $submissions]);
+
+    }
+
     public function downloadFile(File $file, FileUploadService $fileUploadService)
     {
         return $fileUploadService->downloadFile($file);
