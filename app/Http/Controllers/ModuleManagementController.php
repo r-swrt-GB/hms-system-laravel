@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Module;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ModuleManagementController extends Controller
@@ -16,6 +17,14 @@ class ModuleManagementController extends Controller
     public function list(Request $request)
     {
         $modules = Module::all();
+        return response()->json(['modules' => $modules]);
+    }
+
+    public function getUserModules(Request $request)
+    {
+
+        $user = Auth::user();
+        $modules = $user->modules()->get();
         return response()->json(['modules' => $modules]);
     }
 

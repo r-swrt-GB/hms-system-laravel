@@ -23,6 +23,12 @@ class AssignmentsController extends Controller
         return response()->json(['assignments' => $assignments]);
     }
 
+    public function getModuleAssignments(Request $request, Module $module)
+    {
+        $assignments = $module->assignments();
+        return response()->json(['assignments' => $assignments]);
+    }
+
     public function getAssignmentPage(Request $request, Assignment $assignment)
     {
         $assignment = $this->loadFullAssignment($assignment);

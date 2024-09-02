@@ -29,7 +29,9 @@ class ApiRoutesV1
                 // Read
                 Route::get('/{module}', [ModuleManagementController::class, 'read'])->name('api.modules.read');
                 // List
-                Route::get('/', [ModuleManagementController::class, 'list'])->name('api.modules.list');
+                Route::get('/list', [ModuleManagementController::class, 'list'])->name('api.modules.modules.list');
+                // List
+                Route::get('/', [ModuleManagementController::class, 'getUserModules'])->name('api.modules.list');
 
 
                 Route::prefix('/{module}')->group(function () {
@@ -43,6 +45,8 @@ class ApiRoutesV1
                     Route::delete('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'delete'])->name('api.submissions.delete');
                     //Read
                     Route::get('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'read'])->name('api.submissions.read');
+                    //List
+                    Route::get('/assignments/{assignment}/submissions/', [SubmissionsController::class, 'getAssignmentSubmissions'])->name('api.submissions.assignment.list');
 
                     //Assignments
                     //Create
@@ -54,7 +58,9 @@ class ApiRoutesV1
                     //Read
                     Route::get('/assignments/{assignment}', [AssignmentsController::class, 'read'])->name('api.assignments.read');
                     //List
-                    Route::get('/assignments/', [AssignmentsController::class, 'list'])->name('api.assignments.list');
+                    Route::get('/assignments/list', [AssignmentsController::class, 'list'])->name('api.assignments.list');
+                    //List
+                    Route::get('/assignments/', [AssignmentsController::class, 'getModuleAssignments'])->name('api.assignments.module.list');
 
                     //Groups
                     //Create
