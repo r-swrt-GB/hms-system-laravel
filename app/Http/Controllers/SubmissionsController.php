@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Classes\FileUploads\FileUploadService;
 use App\Models\Assignment;
+use App\Models\File;
 use App\Models\Group;
 use App\Models\Module;
 use App\Models\Submission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use PhpParser\Node\Expr\AssignOp\Mod;
 
 class SubmissionsController extends Controller
 {
@@ -41,6 +41,11 @@ class SubmissionsController extends Controller
         return response()->json(['submission' => $submission]);
     }
 
+    public function downloadFile(File $file, FileUploadService $fileUploadService)
+    {
+        return $fileUploadService->downloadFile($file);
+    }
+
     private function getFullSubmission(Submission $submission)
     {
         return $submission->load(['user', 'comments', 'assignments', 'files']);
@@ -60,11 +65,9 @@ class SubmissionsController extends Controller
 
         if ($assignment->isIndividual()) {
             $userId = auth()->id();
-
             $submission->user()->attach($userId);
         } elseif ($assignment->isGroup()) {
             $groupId = $request->input('group_id');
-
             $group = Group::findOrFail($groupId);
             $groupUsers = $group->users;
 
@@ -74,7 +77,6 @@ class SubmissionsController extends Controller
             }
         }
 
-        // Handle file uploads
         $fileUploadService = new FileUploadService();
         foreach ($request->file('files') as $file) {
             $fileUploadService->uploadFile($file, 'submissions', $submission->id);
@@ -82,7 +84,6 @@ class SubmissionsController extends Controller
 
         return response()->json(['submission' => $submission, 'message' => 'Submission created successfully.']);
     }
-
 
     /**
      * Update the specified submission.
@@ -105,7 +106,6 @@ class SubmissionsController extends Controller
         } elseif ($assignment->isGroup()) {
             $groupId = $request->input('group_id');
             $group = Group::findOrFail($groupId);
-
             $groupUsers = $group->users;
 
             foreach ($groupUsers as $user) {
@@ -113,14 +113,13 @@ class SubmissionsController extends Controller
             }
         }
 
-        // Handle file uploads
+        // Handle file uploads using Azure Blob Storage
         if ($request->hasFile('files')) {
             $fileUploadService = new FileUploadService();
             foreach ($request->file('files') as $file) {
                 $fileUploadService->uploadFile($file, 'submissions', $submission->id);
             }
         }
-
 
         return response()->json(['message' => 'Submission updated successfully.']);
     }
@@ -133,7 +132,6 @@ class SubmissionsController extends Controller
         // Detach all associated users
         $submission->user()->detach();
 
-        // Delete associated files
         foreach ($submission->files as $file) {
             Storage::disk($file->disk)->delete($file->key);
             $file->delete();

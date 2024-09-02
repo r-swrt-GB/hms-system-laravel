@@ -47,7 +47,7 @@ class GroupController extends Controller
 
     private function loadGroupFully(Group $group)
     {
-        return $$group->load(['users', 'assignment']);
+        return $group->load(['users', 'assignment']);
     }
 
     /**
