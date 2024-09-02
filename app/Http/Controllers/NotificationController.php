@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
+    public function getUserNotifications(Request $request)
+    {
+        $user = Auth::user();
+        $notifications = $user->notifications()->get();
+
+        return response()->json(['notifications' => $notifications]);
+    }
+
     public function create(Request $request, Module $module)
     {
         $validatedData = $request->validate([

@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    public function list(Request $request)
+    public function getSubmissionComments(Request $request, Submission $submission)
     {
-        $comment = Comment::all();
+        $comments = $submission->comments();
 
-        return response()->json('comments', $comment);
+        return response()->json(['comments', $comments]);
     }
     /**
      * Get the specified comment

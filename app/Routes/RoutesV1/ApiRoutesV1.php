@@ -73,7 +73,8 @@ class ApiRoutesV1
                     Route::patch('/assignments/{assignment}/submissions/{submission}/comments/{comment}', [CommentController::class, 'update'])->name('api.comments.update');
                     //Delete
                     Route::delete('/assignments/{assignment}/submissions/{submission}/comments/{comment}', [CommentController::class, 'delete'])->name('api.comments.delete');
-                    //Read
+                    //List
+                    Route::get('assignments/{assignment}/submissions/{submission}/comments/', [CommentController::class, 'getSubmissionComments'])->name('api.submissions.comments.list');
 
                     //Notification
                     //Create
@@ -87,7 +88,8 @@ class ApiRoutesV1
                     //Read Notification
                     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
                     //List
-                    Route::get('/notifications/', [NotificationController::class, 'list'])->name('api.notification.list');
+                    Route::get('/notifications/list', [NotificationController::class, 'list'])->name('api.notification.list');
+                    Route::get('/notifications/', [NotificationController::class, 'getUserNotifications'])->name('api.notification.user.list');
 
                 });
             });
