@@ -39,9 +39,9 @@ class Notification extends Model
         'message',
     ];
 
-    public function user(): BelongsTo
+    public function user(): BelongsToMany
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class,'user_on_notification');
     }
 
     public function assignments(): BelongsTo
