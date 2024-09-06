@@ -24,6 +24,12 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function getUserProfile(Request $request)
+    {
+        $user = Auth::user();
+        return response()->json($user);
+    }
+
     /**
      * Update the user's profile information.
      */
