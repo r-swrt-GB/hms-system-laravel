@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Assignment;
 use App\Models\Group;
+use http\Client\Curl\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Response;
 
 class GroupController extends Controller
 {
@@ -48,6 +51,13 @@ class GroupController extends Controller
     private function loadGroupFully(Group $group)
     {
         return $group->load(['users', 'assignment']);
+    }
+
+    public function getUserGroups(Request $request)
+    {
+        $user=Auth::user();
+        $groups = $user->groups()->get();
+        return response()->json(['groups' => $groups]);
     }
 
     /**
