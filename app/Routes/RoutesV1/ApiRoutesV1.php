@@ -32,6 +32,7 @@ class ApiRoutesV1
             //List
             Route::get('/notifications/list', [NotificationController::class, 'list'])->name('api.notification.list');
             Route::get('/notifications', [NotificationController::class, 'getUserNotifications'])->name('api.notification.user.list');
+            Route::get('/assignments', [AssignmentsController::class, 'getUserAssignments'])->name('api.assignments.user.list');
 
             Route::prefix('/modules')->group(function () {
                 //Module

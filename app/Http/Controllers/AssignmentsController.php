@@ -29,6 +29,13 @@ class AssignmentsController extends Controller
         return response()->json(['assignments' => $assignments]);
     }
 
+    public function getUserAssignments(Request $request)
+    {
+        $user = Auth::user();
+        $assignments = $user->assignments();
+        return response()->json(['assignments' => $assignments]);
+    }
+
     public function getAssignmentPage(Request $request, Assignment $assignment)
     {
         $assignment = $this->loadFullAssignment($assignment);
