@@ -39,9 +39,17 @@ class Notification extends Model
         'message',
     ];
 
-    public function user(): BelongsToMany
+
+    // Relationship with User
+    public function user()
     {
-        return $this->belongsToMany(User::class,'user_on_notification');
+        return $this->belongsTo(User::class);
+    }
+
+    // Relationship with Module
+    public function module()
+    {
+        return $this->belongsTo(Module::class);
     }
 
     public function assignments(): BelongsTo
