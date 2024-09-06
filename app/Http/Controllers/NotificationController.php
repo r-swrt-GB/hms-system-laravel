@@ -89,8 +89,8 @@ class NotificationController extends Controller
     {
         $user->notifications()->sync([$notification->id]);
 
-        $userNotification->read_at = now();
-        $userNotification->save();
+        $notification->read_at = now();
+        $notification->save();
 
         return response()->json(['message' => 'Notification marked as read.']);
     }

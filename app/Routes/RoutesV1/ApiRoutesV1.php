@@ -28,7 +28,7 @@ class ApiRoutesV1
             //Read
             Route::get('/notifications/{notification}', [NotificationController::class, 'read'])->name('api.notification.read');
             //Read Notification
-            Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
+            Route::patch('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
             //List
             Route::get('/notifications/list', [NotificationController::class, 'list'])->name('api.notification.list');
             Route::get('/notifications', [NotificationController::class, 'getUserNotifications'])->name('api.notification.user.list');
