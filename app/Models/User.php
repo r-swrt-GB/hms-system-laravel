@@ -92,4 +92,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Group::class, 'user_groups');
     }
+
+    public function assignments(): BelongsToMany
+    {
+        return $this->belongsToMany(Assignment::class, 'user_assignments');
+    }
 }

@@ -53,11 +53,6 @@ class Assignment extends Model
     const TYPE_INDIVIDUAL = 'individual';
     const TYPE_GROUP = 'group';
 
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'user_assignments');
-    }
-
     public function submissions(): HasMany
     {
         return $this->hasMany(Submission::class);
@@ -86,5 +81,10 @@ class Assignment extends Model
     public function isGroup(): bool
     {
         return $this->type === self::TYPE_GROUP;
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_assignments');
     }
 }
