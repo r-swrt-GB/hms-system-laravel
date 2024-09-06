@@ -16,7 +16,7 @@ class ModuleManagementController extends Controller
 
     public function list(Request $request)
     {
-        $modules = Module::all();
+        $modules = Module::all()->get();
         return response()->json(['modules' => $modules]);
     }
 

@@ -8,6 +8,7 @@ use App\Models\File;
 use App\Models\Group;
 use App\Models\Module;
 use App\Models\Submission;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -68,7 +69,10 @@ class SubmissionsController extends Controller
             'files' => 'required|array',
         ]);
 
-        $submission = Submission::create($validatedData);
+        $submission = new Submission();
+        $submission->submission_date = Carbon::parse($validatedData['submission_date']);
+        $submission->assignment_id = $assignment->id;
+        $submission->save();
 
         if ($assignment->isIndividual()) {
             $userId = auth()->id();

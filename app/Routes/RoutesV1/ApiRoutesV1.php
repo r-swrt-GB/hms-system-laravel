@@ -18,6 +18,21 @@ class ApiRoutesV1
         // Authenticated requests
         Route::middleware('auth:sanctum')->group(function () {
 
+            //Notification
+            //Create
+            Route::post('/notifications/create', [NotificationController::class, 'create'])->name('api.notification.create');
+            //Update
+            Route::patch('/notifications/{notification}', [NotificationController::class, 'update'])->name('api.notification.update');
+            //Delete
+            Route::delete('/notifications/{notification}', [NotificationController::class, 'delete'])->name('api.notification.delete');
+            //Read
+            Route::get('/notifications/{notification}', [NotificationController::class, 'read'])->name('api.notification.read');
+            //Read Notification
+            Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
+            //List
+            Route::get('/notifications/list', [NotificationController::class, 'list'])->name('api.notification.list');
+            Route::get('/notifications', [NotificationController::class, 'getUserNotifications'])->name('api.notification.user.list');
+
             Route::prefix('/modules')->group(function () {
                 //Module
                 //Create
@@ -81,22 +96,6 @@ class ApiRoutesV1
                     Route::delete('/assignments/{assignment}/submissions/{submission}/comments/{comment}', [CommentController::class, 'delete'])->name('api.comments.delete');
                     //List
                     Route::get('assignments/{assignment}/submissions/{submission}/comments/', [CommentController::class, 'getSubmissionComments'])->name('api.submissions.comments.list');
-
-                    //Notification
-                    //Create
-                    Route::post('/notifications/create', [NotificationController::class, 'create'])->name('api.notification.create');
-                    //Update
-                    Route::patch('/notifications/{notification}', [NotificationController::class, 'update'])->name('api.notification.update');
-                    //Delete
-                    Route::delete('/notifications/{notification}', [NotificationController::class, 'delete'])->name('api.notification.delete');
-                    //Read
-                    Route::get('/notifications/{notification}', [NotificationController::class, 'read'])->name('api.notification.read');
-                    //Read Notification
-                    Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
-                    //List
-                    Route::get('/notifications/list', [NotificationController::class, 'list'])->name('api.notification.list');
-                    Route::get('/notifications/', [NotificationController::class, 'getUserNotifications'])->name('api.notification.user.list');
-
                 });
             });
 
