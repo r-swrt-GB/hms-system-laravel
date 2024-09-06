@@ -32,7 +32,7 @@ class AssignmentsController extends Controller
     public function getUserAssignments(Request $request)
     {
         $user = Auth::user();
-        $assignments = $user->assignments();
+        $assignments = $user->assignments()->get();
         return response()->json(['assignments' => $assignments]);
     }
 
