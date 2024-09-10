@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\ApiLogMiddleware;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckRole;
@@ -30,6 +31,10 @@ class MiddlewareServiceProvider extends ServiceProvider
             CheckRight::class . ':assign-marks',
             CheckRight::class . ':create-assignments',
             CheckRight::class . ':view-videos',
+        ]);
+
+        Route::middlewareGroup('apiLog', [
+            ApiLogMiddleware::class . ':apiLog',
         ]);
     }
 
