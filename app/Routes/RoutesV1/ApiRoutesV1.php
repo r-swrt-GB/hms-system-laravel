@@ -28,10 +28,13 @@ class ApiRoutesV1
             //Read
             Route::get('/notifications/{notification}', [NotificationController::class, 'read'])->name('api.notification.read');
             //Read Notification
-            Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
+            Route::patch('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
             //List
             Route::get('/notifications/list', [NotificationController::class, 'list'])->name('api.notification.list');
             Route::get('/notifications', [NotificationController::class, 'getUserNotifications'])->name('api.notification.user.list');
+            Route::get('/assignments', [AssignmentsController::class, 'getUserAssignments'])->name('api.assignments.user.list');
+            Route::get('/groups', [GroupController::class, 'getUserGroups'])->name('api.groups.user.list');
+
 
             Route::prefix('/modules')->group(function () {
                 //Module
@@ -100,7 +103,7 @@ class ApiRoutesV1
             });
 
             // Profile
-            Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+            Route::get('/profile', [ProfileController::class, 'getUserProfile'])->name('profile.get');
             Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
             Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
         });
