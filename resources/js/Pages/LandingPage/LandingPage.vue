@@ -2,7 +2,7 @@
     <v-container>
         <v-row>
             <v-col>
-                Hello from LandingPage!
+                Hello from Landing Page!
             </v-col>
         </v-row>
     </v-container>
