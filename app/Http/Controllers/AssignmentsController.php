@@ -17,15 +17,9 @@ class AssignmentsController extends Controller
         return Inertia::render('Assignments/AssignmentsPage');
     }
 
-    public function list(Request $request)
-    {
-        $assignments = Assignment::all();
-        return response()->json(['assignments' => $assignments]);
-    }
-
     public function getModuleAssignments(Request $request, Module $module)
     {
-        $assignments = $module->assignments();
+        $assignments = $module->assignments()->get();
         return response()->json(['assignments' => $assignments]);
     }
 
@@ -66,9 +60,9 @@ class AssignmentsController extends Controller
             'group_ids' => 'array',
         ]);
 
+        $validatedData['module_id'] = $module->id;
+        $validatedData['user_id'] = Auth::user()->id;
         $assignment = Assignment::create($validatedData);
-        $assignment->module_id = $module->id;
-        $assignment->user_id = Auth::user()->id;
         $assignment->save();
 
         if ($assignment->isIndividual()) {
@@ -139,11 +133,11 @@ class AssignmentsController extends Controller
     {
         $assignment = $this->loadFullAssignment($assignment);
 
-        return response()->json(['assignment' => $assignment, 'message' => 'Assignment deleted successfully.']);
+        return response()->json(['assignment' => $assignment]);
     }
 
     private function loadFullAssignment(Assignment $assignment): Assignment
     {
-        return $assignment->load(['submissions', 'module', 'created_by', 'isIndividual', 'isGroup']);
+        return $assignment->load(['submissions', 'module']);
     }
 }

@@ -17,42 +17,41 @@ class ApiRoutesV1
     {
         // Authenticated requests
         Route::middleware('auth:sanctum')->group(function () {
-
-            //Notification
-            //Create
-            Route::post('/notifications/create', [NotificationController::class, 'create'])->name('api.notification.create');
-            //Update
-            Route::patch('/notifications/{notification}', [NotificationController::class, 'update'])->name('api.notification.update');
-            //Delete
-            Route::delete('/notifications/{notification}', [NotificationController::class, 'delete'])->name('api.notification.delete');
-            //Read
-            Route::get('/notifications/{notification}', [NotificationController::class, 'read'])->name('api.notification.read');
-            //Read Notification
-            Route::patch('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
-            //List
-            Route::get('/notifications/list', [NotificationController::class, 'list'])->name('api.notification.list');
-            Route::get('/notifications', [NotificationController::class, 'getUserNotifications'])->name('api.notification.user.list');
             Route::get('/assignments', [AssignmentsController::class, 'getUserAssignments'])->name('api.assignments.user.list');
             Route::get('/groups', [GroupController::class, 'getUserGroups'])->name('api.groups.user.list');
 
 
             Route::prefix('/modules')->group(function () {
-                //Module
-                //Create
+                // Create
                 Route::post('/create', [ModuleManagementController::class, 'create'])->name('api.modules.create');
+                // List (specific route)
+                Route::get('/list', [ModuleManagementController::class, 'list'])->name('api.modules.modules.list');
+                // List (user modules)
+                Route::get('/', [ModuleManagementController::class, 'getUserModules'])->name('api.modules.list');
                 // Update
                 Route::patch('/{module}', [ModuleManagementController::class, 'update'])->name('api.modules.update');
                 // Delete
                 Route::delete('/{module}', [ModuleManagementController::class, 'delete'])->name('api.modules.delete');
-                // Read
+                // Read (most generic, should be last)
                 Route::get('/{module}', [ModuleManagementController::class, 'read'])->name('api.modules.read');
-                // List
-                Route::get('/list', [ModuleManagementController::class, 'list'])->name('api.modules.modules.list');
-                // List
-                Route::get('/', [ModuleManagementController::class, 'getUserModules'])->name('api.modules.list');
 
 
                 Route::prefix('/{module}')->group(function () {
+                    //Notification
+                    //Create
+                    Route::post('/notifications/create', [NotificationController::class, 'create'])->name('api.notification.create');
+                    //Update
+                    Route::patch('/notifications/{notification}', [NotificationController::class, 'update'])->name('api.notification.update');
+                    //Delete
+                    Route::delete('/notifications/{notification}', [NotificationController::class, 'delete'])->name('api.notification.delete');
+                    //Read
+                    Route::get('/notifications/{notification}', [NotificationController::class, 'read'])->name('api.notification.read');
+                    //Read Notification
+                    Route::patch('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notification.markAsRead');
+                    //List
+                    Route::get('/notifications/list', [NotificationController::class, 'list'])->name('api.notification.list');
+                    Route::get('/notifications', [NotificationController::class, 'getUserNotifications'])->name('api.notification.user.list');
+
 
                     //Submissions
                     //Create
@@ -67,6 +66,8 @@ class ApiRoutesV1
                     Route::get('/assignments/{assignment}/submissions/', [SubmissionsController::class, 'getAssignmentSubmissions'])->name('api.submissions.assignment.list');
 
                     //Assignments
+                    //List
+                    Route::get('/assignments/', [AssignmentsController::class, 'getModuleAssignments'])->name('api.assignments.module.list');
                     //Create
                     Route::post('/assignments/create', [AssignmentsController::class, 'create'])->name('api.assignments.create');
                     //Update
@@ -75,10 +76,6 @@ class ApiRoutesV1
                     Route::delete('/assignments/{assignment}', [AssignmentsController::class, 'delete'])->name('api.assignments.delete');
                     //Read
                     Route::get('/assignments/{assignment}', [AssignmentsController::class, 'read'])->name('api.assignments.read');
-                    //List
-                    Route::get('/assignments/list', [AssignmentsController::class, 'list'])->name('api.assignments.list');
-                    //List
-                    Route::get('/assignments/', [AssignmentsController::class, 'getModuleAssignments'])->name('api.assignments.module.list');
 
                     //Groups
                     //Create

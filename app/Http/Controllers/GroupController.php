@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Assignment;
 use App\Models\Group;
+use App\Models\Module;
 use http\Client\Curl\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
+use PhpParser\Node\Expr\AssignOp\Mod;
 
 class GroupController extends Controller
 {
@@ -19,7 +21,7 @@ class GroupController extends Controller
      * @param Assignment $assignment
      * @return JsonResponse
      */
-    public function store(Request $request, Assignment $assignment)
+    public function create(Request $request, Module $module, Assignment $assignment)
     {
         $validatedData = $request->validate([
             'name' => 'string|required',
@@ -41,7 +43,7 @@ class GroupController extends Controller
      * @param Group $group
      * @return mixed
      */
-    public function read(Group $group)
+    public function read(Module $module, Assignment $assignment, Group $group)
     {
         $group = $this->loadGroupFully($group);
 
@@ -55,7 +57,7 @@ class GroupController extends Controller
 
     public function getUserGroups(Request $request)
     {
-        $user=Auth::user();
+        $user = Auth::user();
         $groups = $user->groups()->get();
         return response()->json(['groups' => $groups]);
     }
@@ -66,7 +68,7 @@ class GroupController extends Controller
      * @param Group $group
      * @return mixed
      */
-    public function update(Request $request, Group $group)
+    public function update(Request $request, Module $module, Assignment $assignment, Group $group)
     {
         $validatedData = $request->validate([
             'name' => 'string|required',
@@ -88,7 +90,7 @@ class GroupController extends Controller
      * @param Group $group
      * @return mixed
      */
-    public function delete(Group $group)
+    public function delete(Module $module, Assignment $assignment, Group $group)
     {
         $group->users()->detach();
         $group->delete();

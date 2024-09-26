@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
- * App\Models\Comments
+ * App\Models\Module
  *
  * @property int $id
  * @property string $module_name
@@ -46,8 +47,13 @@ class Module extends Model
         ];
     }
 
-    public function modules(): HasMany
+    public function assignments(): HasMany
     {
         return $this->hasMany(Assignment::class);
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class,'user_modules');
     }
 }

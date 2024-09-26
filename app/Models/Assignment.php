@@ -46,6 +46,8 @@ class Assignment extends Model
         'max_grade',
         'open_date',
         'due_date',
+        'module_id',
+        'user_id',
         'created_at',
         'updated_at',
     ];

@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $user_id
  * @property int $module_id
  * @property string $title
- * @property string $type
  * @property string $message
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -32,10 +31,9 @@ class Notification extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'usr_id',
+        'user_id',
         'module_id',
-        'tile',
-        'type',
+        'title',
         'message',
     ];
 

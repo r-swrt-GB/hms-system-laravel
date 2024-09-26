@@ -11,12 +11,13 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    public function getSubmissionComments(Request $request, Submission $submission)
+    public function getSubmissionComments(Request $request, Module $module, Assignment $assignment, Submission $submission)
     {
-        $comments = $submission->comments();
+        $comments = $submission->comments()->get();
 
-        return response()->json(['comments', $comments]);
+        return response()->json(['comments' => $comments]);
     }
+
     /**
      * Get the specified comment
      */
@@ -38,13 +39,14 @@ class CommentController extends Controller
     public function create(Request $request, Module $module, Assignment $assignment, Submission $submission)
     {
         $validatedData = $request->validate([
-           'comment_text' => 'required|string',
+            'comment_text' => 'required|string',
         ]);
 
         $comment = Comment::create([
             'user_id' => Auth::id(),
             'assignment_id' => $assignment->id,
             'module_id' => $module->id,
+            'submission_id' => $submission->id,
             'comment_text' => $validatedData['comment_text'],
         ]);
 

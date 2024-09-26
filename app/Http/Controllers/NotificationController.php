@@ -24,23 +24,14 @@ class NotificationController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string',
             'message' => 'required|string',
-            'type' => 'required|string',
         ]);
+
+        $validatedData['user_id'] = Auth::user()->id;
+        $validatedData['module_id'] = $module->id;
 
         $notification = Notification::create($validatedData);
 
-        // Associate notification with the module and user
-        $notification->user_id = Auth::user()->id;
-        $notification->module_id = $module->id;
-        $notification->save();
-
-        // Create entry in user_notifications
-        UserNotification::create([
-            'user_id' => Auth::user()->id,
-            'notification_id' => $notification->id,
-        ]);
-
-        return response()->json(['message' => 'Notification created successfully.']);
+        return response()->json(['notification' => $notification, 'message' => 'Notification created successfully.']);
     }
 
     public function update(Request $request, Module $module, Notification $notification)
@@ -48,7 +39,6 @@ class NotificationController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string',
             'message' => 'required|string',
-            'type' => 'required|string',
         ]);
 
         $notification->update($validatedData);
@@ -63,11 +53,6 @@ class NotificationController extends Controller
 
     public function delete(Request $request, Module $module, Notification $notification)
     {
-        // Delete entry from user_notifications
-        UserNotification::where('notification_id', $notification->id)
-            ->where('user_id', Auth::user()->id)
-            ->delete();
-
         $notification->delete();
 
         return response()->json(['message' => 'Notification deleted successfully.']);
@@ -85,10 +70,8 @@ class NotificationController extends Controller
         return $notification->load(['user', 'module']);
     }
 
-    public function markAsRead(Notification $notification, User $user)
+    public function markAsRead(Module $module, Notification $notification, User $user)
     {
-        $user->notifications()->sync([$notification->id]);
-
         $notification->read_at = now();
         $notification->save();
 
