@@ -1,66 +1,145 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# HMS-System API Documentation
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![HMS-System Logo](https://health-sciences.nwu.ac.za/sites/health-sciences.nwu.ac.za/files/styles/max_1300x1300/public/files/image/1.png?itok=LnMA_Ypy)
 
-## About Laravel
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Prerequisites](#prerequisites)
+3. [Installation](#installation)
+4. [Running the Application](#running-the-application)
+5. [Database Setup](#database-setup)
+6. [API Usage](#api-usage)
+7. [Windows Users](#windows-users)
+8. [Troubleshooting](#troubleshooting)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Introduction
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The HMS-System API facilitates seamless interaction between lecturers and students in an educational environment. This API enables lecturers to create and manage assignments on a web platform, which include a video and a detailed description. Students can access these assignments via a mobile application, allowing them to submit their own video responses.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Key functionalities include:
+- **Assignment Management**: Lecturers can create, update, and delete assignments.
+- **Submission Handling**: Students can submit their video responses directly through the mobile app.
+- **Feedback Mechanism**: Lecturers can review submissions, provide marks, and leave comments.
 
-## Learning Laravel
+This README will guide you through the setup and usage of the HMS-System API.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Prerequisites
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Before you begin, ensure you have the following installed on your system:
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Git](https://git-scm.com/downloads)
+- [Composer](https://getcomposer.org/download/) (for local development)
+- [PHP](https://www.php.net/downloads.php) (version 8.2 or higher)
+- [Node.js](https://nodejs.org/en/download/) (version 14.x or higher)
+- [npm](https://www.npmjs.com/get-npm) (usually comes with Node.js)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+To check your installed versions:
+- For PHP: `php -v`
+- For Node.js: `node -v`
+- For npm: `npm -v`
 
-## Laravel Sponsors
+Ensure that your PHP installation has the required extensions for Laravel, such as php-mbstring, php-xml, php-curl, etc.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Installation
 
-### Premium Partners
+1. Clone the repository:
+   ```
+   git clone https://github.com/your-repo/hms-system.git
+   cd hms-system
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+2. Copy the environment file:
+   ```
+   cp .env.example .env
+   ```
 
-## Contributing
+3. Install Composer dependencies:
+   ```
+   composer install
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. Install npm dependencies:
+   ```
+   npm install
+   ```
 
-## Code of Conduct
+5. Build the frontend assets:
+   ```
+   npm run build
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Running the Application
 
-## Security Vulnerabilities
+1. Start the Docker containers using Laravel Sail:
+   ```
+   ./vendor/bin/sail up -d
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+2. Generate an application key:
+   ```
+   ./vendor/bin/sail artisan key:generate
+   ```
 
-## License
+3. Run database migrations and seeders:
+   ```
+   ./vendor/bin/sail artisan migrate --seed
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The application should now be running at `http://localhost`.
+
+## Database Setup
+
+The database is automatically set up when you run the migrations and seeders. However, if you need to reset the database, you can use:
+
+```
+./vendor/bin/sail artisan migrate:fresh --seed
+```
+
+## API Usage
+
+1. Register a new account using the registration endpoint.
+
+2. Use the returned bearer token in Postman to authenticate your requests.
+
+3. Access the Postman collection for this API using the following link:
+   [HMS-System API Postman Collection](https://hms-system-team.postman.co/workspace/HMS-System-API-V1~a009c4f3-28d1-4824-a5d0-21653cd45f0b/collection/38045529-%20a28a93f5-1b5d-41e0-9768-a193cec78d3f?action=share&creator=38045529)
+
+4. In Postman, set the `{{base_url_docker}}` variable to `http://localhost` for making requests to the Docker setup.
+
+## Windows Users
+
+If you encounter issues running nginx on Windows:
+
+1. Stop the Docker containers:
+   ```
+   ./vendor/bin/sail down
+   ```
+
+2. Start the Laravel development server:
+   ```
+   php artisan serve
+   ```
+
+3. In Postman, use the `{{base_url_local}}` variable instead of `{{base_url_docker}}`. Set `{{base_url_local}}` to `http://127.0.0.1:8000`.
+
+## Troubleshooting
+
+If you encounter any issues:
+
+1. Ensure all Docker containers are running:
+   ```
+   docker ps
+   ```
+
+2. Check Docker logs:
+   ```
+   ./vendor/bin/sail logs
+   ```
+
+3. If you make changes to the Dockerfile or docker-compose.yml, rebuild the containers:
+   ```
+   ./vendor/bin/sail build --no-cache
+   ```
+
+For further assistance, please open an issue in the GitHub repository.
