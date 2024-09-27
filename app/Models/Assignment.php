@@ -85,6 +85,11 @@ class Assignment extends Model
         return $this->type === self::TYPE_GROUP;
     }
 
+    public function groups(): HasMany
+    {
+        return $this->hasMany(Group::class);
+    }
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_assignments');

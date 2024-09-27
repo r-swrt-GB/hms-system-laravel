@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use PhpParser\Node\Expr\AssignOp\Mod;
 
 class ModuleManagementController extends Controller
 {
@@ -40,15 +41,15 @@ class ModuleManagementController extends Controller
         return response()->json(['modules' => $modules]);
     }
 
-    public function read(Request $request, $moduleId)
+    public function read(Request $request, Module $module)
     {
         try {
-            $module = Module::findOrFail($moduleId);
             return response()->json(['module' => $module]);
+
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'error' => 'Module not found',
-                'message' => "No module found with id {$moduleId}"
+                'message' => "Could not find a module with this ID.}"
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
@@ -87,11 +88,9 @@ class ModuleManagementController extends Controller
         }
     }
 
-    public function update(Request $request, $moduleId)
+    public function update(Request $request, Module $module)
     {
         try {
-            $module = Module::findOrFail($moduleId);
-
             $validatedData = $request->validate([
                 'module_name' => 'required|string|max:255',
                 'code' => 'required|string|unique:modules,code,' . $module->id
@@ -103,7 +102,7 @@ class ModuleManagementController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'error' => 'Module not found',
-                'message' => "No module found with id {$moduleId}"
+                'message' => "No module found with id {$module->id}"
             ], 404);
         } catch (ValidationException $e) {
             return response()->json([
@@ -123,10 +122,29 @@ class ModuleManagementController extends Controller
         }
     }
 
+    /**
+     * Remove the specified module from storage.
+     *
+     * @param Request $request
+     * @param Module $module
+     * @return mixed
+     */
     public function delete(Request $request, Module $module)
     {
-        $module->delete();
+        try {
+            $module->delete();
 
-        return response()->json(['message' => 'Module deleted successfully.']);
+            return response()->json(['message' => 'Module deleted successfully.']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Not Found',
+                'message' => 'Module not found.'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => 'Please try again later or contact support if the problem persists.'
+            ], 500);
+        }
     }
 }
