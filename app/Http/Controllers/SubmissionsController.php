@@ -20,137 +20,142 @@ class SubmissionsController extends Controller
         return Inertia::render('Submissions/Submissions');
     }
 
-    /**
-     * Display the specified submission page.
-     */
     public function getSubmissionPage(Request $request, Submission $submission)
     {
-        $submission = $this->getFullSubmission($submission);
-
-        return Inertia::render('Submissions/SubmissionPage', [
-            'submission' => $submission
-        ]);
+        try {
+            $submission = $this->getFullSubmission($submission);
+            return Inertia::render('Submissions/SubmissionPage', [
+                'submission' => $submission
+            ]);
+        } catch (\Exception $e) {
+            return Inertia::render('Error', ['message' => 'An error occurred while fetching the submission.']);
+        }
     }
 
-    /**
-     * Get the specified submission.
-     */
     public function read(Request $request, Submission $submission)
     {
-        $submission = $this->getFullSubmission($submission);
-
-        return response()->json(['submission' => $submission]);
+        try {
+            $submission = $this->getFullSubmission($submission);
+            return response()->json(['submission' => $submission]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while fetching the submission.'], 500);
+        }
     }
 
     public function getAssignmentSubmissions(Request $request, Assignment $assignment)
     {
-        $submissions = $assignment->submissions();
-        return response()->json(['submissions' => $submissions]);
-
+        try {
+            $submissions = $assignment->submissions();
+            return response()->json(['submissions' => $submissions]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while fetching submissions.'], 500);
+        }
     }
 
     public function downloadFile(File $file, FileUploadService $fileUploadService)
     {
-        return $fileUploadService->downloadFile($file);
+        try {
+            return $fileUploadService->downloadFile($file);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while downloading the file.'], 500);
+        }
+    }
+
+    public function create(Request $request, Module $module, Assignment $assignment)
+    {
+        try {
+            $validatedData = $request->validate([
+                'submission_date' => 'required|date',
+                'files' => 'required|array',
+            ]);
+
+            $submission = new Submission();
+            $submission->submission_date = Carbon::parse($validatedData['submission_date']);
+            $submission->assignment_id = $assignment->id;
+            $submission->save();
+
+            if ($assignment->isIndividual()) {
+                $userId = auth()->id();
+                $submission->user()->attach($userId);
+            } elseif ($assignment->isGroup()) {
+                $groupId = $request->input('group_id');
+                $group = Group::findOrFail($groupId);
+                $groupUsers = $group->users;
+
+                foreach ($groupUsers as $userId) {
+                    $submission->user()->attach($userId);
+                }
+            }
+
+            $fileUploadService = new FileUploadService();
+            foreach ($request->file('files') as $file) {
+                $fileUploadService->uploadFile($file, 'submissions', $submission->id);
+            }
+
+            return response()->json(['submission' => $submission, 'message' => 'Submission created successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while creating the submission.'], 500);
+        }
+    }
+
+    public function update(Request $request, Module $module, Assignment $assignment, Submission $submission)
+    {
+        try {
+            $validatedData = $request->validate([
+                'submission_date' => 'required|date',
+                'files' => 'required|array',
+            ]);
+
+            $submission->update($validatedData);
+
+            $submission->user()->detach();
+
+            if ($assignment->isIndividual()) {
+                $userId = auth()->id();
+                $submission->user()->attach($userId);
+            } elseif ($assignment->isGroup()) {
+                $groupId = $request->input('group_id');
+                $group = Group::findOrFail($groupId);
+                $groupUsers = $group->users;
+
+                foreach ($groupUsers as $user) {
+                    $submission->user()->attach($user->id);
+                }
+            }
+
+            if ($request->hasFile('files')) {
+                $fileUploadService = new FileUploadService();
+                foreach ($request->file('files') as $file) {
+                    $fileUploadService->uploadFile($file, 'submissions', $submission->id);
+                }
+            }
+
+            return response()->json(['message' => 'Submission updated successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while updating the submission.'], 500);
+        }
+    }
+
+    public function delete(Request $request, Module $module, Submission $submission)
+    {
+        try {
+            $submission->user()->detach();
+
+            foreach ($submission->files as $file) {
+                Storage::disk($file->disk)->delete($file->key);
+                $file->delete();
+            }
+
+            $submission->delete();
+
+            return response()->json(['message' => 'Submission deleted successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while deleting the submission.'], 500);
+        }
     }
 
     private function getFullSubmission(Submission $submission)
     {
         return $submission->load(['user', 'comments', 'assignments', 'files']);
-    }
-
-    /**
-     * Store a newly created submission.
-     */
-    public function create(Request $request, Module $module, Assignment $assignment)
-    {
-        $validatedData = $request->validate([
-            'submission_date' => 'required|date',
-            'files' => 'required|array',
-        ]);
-
-        $submission = new Submission();
-        $submission->submission_date = Carbon::parse($validatedData['submission_date']);
-        $submission->assignment_id = $assignment->id;
-        $submission->save();
-
-        if ($assignment->isIndividual()) {
-            $userId = auth()->id();
-            $submission->user()->attach($userId);
-        } elseif ($assignment->isGroup()) {
-            $groupId = $request->input('group_id');
-            $group = Group::findOrFail($groupId);
-            $groupUsers = $group->users;
-
-            // Create user_submissions entries for each user in the group
-            foreach ($groupUsers as $userId) {
-                $submission->user()->attach($userId);
-            }
-        }
-
-        $fileUploadService = new FileUploadService();
-        foreach ($request->file('files') as $file) {
-            $fileUploadService->uploadFile($file, 'submissions', $submission->id);
-        }
-
-        return response()->json(['submission' => $submission, 'message' => 'Submission created successfully.']);
-    }
-
-    /**
-     * Update the specified submission.
-     */
-    public function update(Request $request, Module $module, Assignment $assignment, Submission $submission)
-    {
-        $validatedData = $request->validate([
-            'submission_date' => 'required|date',
-            'files' => 'required|array',
-        ]);
-
-        $submission->update($validatedData);
-
-        // Detach existing relationships
-        $submission->user()->detach();
-
-        if ($assignment->isIndividual()) {
-            $userId = auth()->id();
-            $submission->user()->attach($userId);
-        } elseif ($assignment->isGroup()) {
-            $groupId = $request->input('group_id');
-            $group = Group::findOrFail($groupId);
-            $groupUsers = $group->users;
-
-            foreach ($groupUsers as $user) {
-                $submission->user()->attach($user->id);
-            }
-        }
-
-        // Handle file uploads using Azure Blob Storage
-        if ($request->hasFile('files')) {
-            $fileUploadService = new FileUploadService();
-            foreach ($request->file('files') as $file) {
-                $fileUploadService->uploadFile($file, 'submissions', $submission->id);
-            }
-        }
-
-        return response()->json(['message' => 'Submission updated successfully.']);
-    }
-
-    /**
-     * Remove the specified submission.
-     */
-    public function delete(Request $request, Module $module, Submission $submission)
-    {
-        // Detach all associated users
-        $submission->user()->detach();
-
-        foreach ($submission->files as $file) {
-            Storage::disk($file->disk)->delete($file->key);
-            $file->delete();
-        }
-
-        // Delete the submission
-        $submission->delete();
-
-        return response()->json(['message' => 'Submission deleted successfully.']);
     }
 }

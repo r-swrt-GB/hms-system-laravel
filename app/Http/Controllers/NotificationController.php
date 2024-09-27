@@ -5,79 +5,125 @@ namespace App\Http\Controllers;
 use App\Models\Module;
 use App\Models\Notification;
 use App\Models\User;
-use App\Models\UserNotification;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class NotificationController extends Controller
 {
     public function getUserNotifications(Request $request)
     {
-        $user = Auth::user();
-        $notifications = $user->notifications()->get();
+        try {
+            $user = Auth::user();
+            $notifications = $user->notifications()->get();
 
-        return response()->json(['notifications' => $notifications]);
+            return response()->json(['notifications' => $notifications]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => 'Please try again later or contact support if the problem persists.'
+            ], 500);
+        }
     }
 
     public function create(Request $request, Module $module)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|string',
-            'message' => 'required|string',
-            'type' => 'required|string',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'title' => 'required|string',
+                'message' => 'required|string',
+            ]);
 
-        $notification = Notification::create($validatedData);
+            $validatedData['user_id'] = Auth::user()->id;
+            $validatedData['module_id'] = $module->id;
 
-        // Associate notification with the module and user
-        $notification->user_id = Auth::user()->id;
-        $notification->module_id = $module->id;
-        $notification->save();
+            $notification = Notification::create($validatedData);
 
-        // Create entry in user_notifications
-        UserNotification::create([
-            'user_id' => Auth::user()->id,
-            'notification_id' => $notification->id,
-        ]);
-
-        return response()->json(['message' => 'Notification created successfully.']);
+            return response()->json(['notification' => $notification, 'message' => 'Notification created successfully.']);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'error' => 'Validation Error',
+                'message' => $e->validator->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => 'Please try again later or contact support if the problem persists.'
+            ], 500);
+        }
     }
 
     public function update(Request $request, Module $module, Notification $notification)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|string',
-            'message' => 'required|string',
-            'type' => 'required|string',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'title' => 'required|string',
+                'message' => 'required|string',
+            ]);
 
-        $notification->update($validatedData);
+            $notification->update($validatedData);
 
-        // Update association with module and user
-        $notification->user_id = Auth::user()->id;
-        $notification->module_id = $module->id;
-        $notification->save();
+            // Update association with module and user
+            $notification->user_id = Auth::user()->id;
+            $notification->module_id = $module->id;
+            $notification->save();
 
-        return response()->json(['message' => 'Notification updated successfully.']);
+            return response()->json(['message' => 'Notification updated successfully.']);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'error' => 'Validation Error',
+                'message' => $e->validator->errors()
+            ], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Not Found',
+                'message' => 'Notification not found.'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => 'Please try again later or contact support if the problem persists.'
+            ], 500);
+        }
     }
 
     public function delete(Request $request, Module $module, Notification $notification)
     {
-        // Delete entry from user_notifications
-        UserNotification::where('notification_id', $notification->id)
-            ->where('user_id', Auth::user()->id)
-            ->delete();
+        try {
+            $notification->delete();
 
-        $notification->delete();
-
-        return response()->json(['message' => 'Notification deleted successfully.']);
+            return response()->json(['message' => 'Notification deleted successfully.']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Not Found',
+                'message' => 'Notification not found.'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => 'Please try again later or contact support if the problem persists.'
+            ], 500);
+        }
     }
 
     public function read(Request $request, Module $module, Notification $notification)
     {
-        $notification = $this->getFullNotification($notification);
+        try {
+            $notification = $this->getFullNotification($notification);
 
-        return response()->json(['notification' => $notification]);
+            return response()->json(['notification' => $notification]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Notification not found',
+                'message' => "Could not find a notification with this ID."
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => 'Please try again later or contact support if the problem persists'
+            ], 500);
+        }
     }
 
     public function getFullNotification(Notification $notification)
@@ -85,20 +131,37 @@ class NotificationController extends Controller
         return $notification->load(['user', 'module']);
     }
 
-    public function markAsRead(Notification $notification, User $user)
+    public function markAsRead(Module $module, Notification $notification, User $user)
     {
-        $user->notifications()->sync([$notification->id]);
+        try {
+            $notification->read_at = now();
+            $notification->save();
 
-        $notification->read_at = now();
-        $notification->save();
-
-        return response()->json(['message' => 'Notification marked as read.']);
+            return response()->json(['message' => 'Notification marked as read.']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Not Found',
+                'message' => 'Notification not found.'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => 'Please try again later or contact support if the problem persists.'
+            ], 500);
+        }
     }
 
     public function list(Request $request)
     {
-        $notifications = Notification::all();
-        return response()->json(['notifications' => $notifications]);
+        try {
+            $notifications = Notification::all();
+            return response()->json(['notifications' => $notifications]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => 'Please try again later or contact support if the problem persists.'
+            ], 500);
+        }
     }
 }
 

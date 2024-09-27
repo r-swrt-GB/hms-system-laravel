@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('module_id')->constrained('modules');
             $table->string('title');
-            $table->string('type')->nullable();
             $table->string('message');
             $table->timestamps();
         });

@@ -17,7 +17,7 @@ class RoleSeeder extends Seeder
             [
                 'role_name' => 'Admin',
                 'slug' => 'admin',
-                'description' => 'The project owner and/or sponsor with unrestricted access to all components of the system.'
+                'description' => 'The project owner/manager of the system with unrestricted access to all components of the system.'
             ],
             [
                 'role_name' => 'Lecturer',
@@ -27,7 +27,7 @@ class RoleSeeder extends Seeder
             [
                 'role_name' => 'Student',
                 'slug' => 'student',
-                'description' => 'Students within the faculty who will upload videos and receive feedback.'
+                'description' => 'Students within the faculty/module who will upload videos and receive feedback.'
             ],
         ]);
     }

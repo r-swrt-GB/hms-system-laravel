@@ -46,6 +46,8 @@ class Assignment extends Model
         'max_grade',
         'open_date',
         'due_date',
+        'module_id',
+        'user_id',
         'created_at',
         'updated_at',
     ];
@@ -81,6 +83,11 @@ class Assignment extends Model
     public function isGroup(): bool
     {
         return $this->type === self::TYPE_GROUP;
+    }
+
+    public function groups(): HasMany
+    {
+        return $this->hasMany(Group::class);
     }
 
     public function users(): BelongsToMany

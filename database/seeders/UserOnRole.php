@@ -11,7 +11,7 @@ class UserOnRole extends Seeder
     public function run()
     {
         // Get the 'Admin' role ID
-        $adminRoleId = DB::table('roles')->where('slug', 'admin')->value('id');
+        $adminRoleId = DB::table('roles')->where('slug', 'student')->value('id');
 
         // Get the IDs of the first 4 users
         $userIds = DB::table('users')->limit(4)->pluck('id');

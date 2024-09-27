@@ -17,13 +17,38 @@ class CheckRight
 
         $user = Auth::user();
 
-        // Check if any of the user's roles has the right by its slug
-        $hasRight = $user->roles()->whereHas('rights', function($query) use ($rightSlug) {
-            $query->where('slug', $rightSlug);
-        })->exists();
+        // Admins have unrestricted access
+        if ($user->roles()->where('slug', 'admin')->exists()) {
+            return $next($request);
+        }
 
-        if (!$hasRight) {
-            return redirect()->back()->with('error', "You don't have the right to access this page.");
+        // Define specific access rights based on the right slug
+        $roleAccessMapping = [
+            'student-access' => ['student'],
+            'lecturer-access' => ['lecturer'],
+            'admin-access' => ['admin'],
+        ];
+
+        // Check if the requested right slug has specific roles
+        if (array_key_exists($rightSlug, $roleAccessMapping)) {
+            $roles = $roleAccessMapping[$rightSlug];
+
+            // Check if the user has any of the permitted roles
+            $hasAccess = collect($roles)->contains(function ($role) use ($user) {
+                return $user->hasRole($role);
+            });
+
+            if (!$hasAccess) {
+                return response()->json(['error' => "Unauthorized"], 403);
+            }
+        } else {
+            $hasRight = $user->roles()->whereHas('rights', function ($query) use ($rightSlug) {
+                $query->where('slug', $rightSlug);
+            })->exists();
+
+            if (!$hasRight) {
+                return response()->json(['error' => "Unauthorized"], 403);
+            }
         }
 
         return $next($request);

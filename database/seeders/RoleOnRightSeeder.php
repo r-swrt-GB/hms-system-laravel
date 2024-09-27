@@ -13,31 +13,72 @@ class RoleOnRightSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin role has all rights
+        // Fetch role IDs from the database
         $adminRoleId = DB::table('roles')->where('slug', 'admin')->value('id');
-        $rights = DB::table('rights')->pluck('id');
+        $lecturerRoleId = DB::table('roles')->where('slug', 'lecturer')->value('id');
+        $studentRoleId = DB::table('roles')->where('slug', 'student')->value('id');
 
-        foreach ($rights as $rightId) {
+        // Admin rights
+        DB::table('role_on_right')->insert([
+            ['role_id' => $adminRoleId, 'right_id' => DB::table('rights')->where('slug', 'admin-access')->value('id')],
+        ]);
+
+        // Lecturer rights
+        $lecturerRights = [
+            'lecturer-access',
+            'module-list-view-access',
+            'module-view-access',
+            'module-create-access',
+            'module-update-access',
+            'module-delete-access',
+            'notification-view-access',
+            'notification-create-access',
+            'notification-update-access',
+            'notification-delete-access',
+            'submission-view-access',
+            'submission-create-access',
+            'submission-update-access',
+            'submission-delete-access',
+            'assignment-view-access',
+            'assignment-create-access',
+            'assignment-mark-as-read-update-update-access',
+            'assignment-delete-access',
+            'comment-view-access',
+            'comment-create-access',
+            'comment-update-access',
+            'comment-delete-access',
+            'profile-view-access',
+            'profile-update-access',
+            'profile-delete-access',
+        ];
+
+        foreach ($lecturerRights as $right) {
             DB::table('role_on_right')->insert([
-                'role_id' => $adminRoleId,
-                'right_id' => $rightId,
+                ['role_id' => $lecturerRoleId, 'right_id' => DB::table('rights')->where('slug', $right)->value('id')],
             ]);
         }
 
-        // Lecturer role (view videos, provide feedback, assign marks, create-assignments)
-        $lecturerRoleId = DB::table('roles')->where('slug', 'lecturer')->value('id');
-        DB::table('role_on_right')->insert([
-            ['role_id' => $lecturerRoleId, 'right_id' => DB::table('rights')->where('slug', 'view-videos')->value('id')],
-            ['role_id' => $lecturerRoleId, 'right_id' => DB::table('rights')->where('slug', 'provide-feedback')->value('id')],
-            ['role_id' => $lecturerRoleId, 'right_id' => DB::table('rights')->where('slug', 'assign-marks')->value('id')],
-            ['role_id' => $lecturerRoleId, 'right_id' => DB::table('rights')->where('slug', 'create-assignments')->value('id')],
-        ]);
+        // Student rights
+        $studentRights = [
+            'student-access',
+            'module-view-access',
+            'notification-view-access',
+            'notification-mark-as-read-update-access',
+            'submission-view-access',
+            'submission-create-access',
+            'submission-update-access',
+            'assignment-view-access',
+            'comment-view-access',
+            'comment-view-list-access',
+            'profile-view-access',
+            'profile-update-access',
+            'profile-delete-access',
+        ];
 
-        // Student role (view videos, upload videos)
-        $studentRoleId = DB::table('roles')->where('slug', 'student')->value('id');
-        DB::table('role_on_right')->insert([
-            ['role_id' => $studentRoleId, 'right_id' => DB::table('rights')->where('slug', 'upload-videos')->value('id')],
-            ['role_id' => $studentRoleId, 'right_id' => DB::table('rights')->where('slug', 'view-videos')->value('id')],
-        ]);
+        foreach ($studentRights as $right) {
+            DB::table('role_on_right')->insert([
+                ['role_id' => $studentRoleId, 'right_id' => DB::table('rights')->where('slug', $right)->value('id')],
+            ]);
+        }
     }
 }
