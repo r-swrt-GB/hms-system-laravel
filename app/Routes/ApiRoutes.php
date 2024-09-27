@@ -16,7 +16,10 @@ class ApiRoutes
 
             Route::prefix('v1/')->group(function () {
                 ApiRoutesV1::get();
-                AuthRoutesV1::get();
+
+                Route::middleware('throttle:10,1')->group(function () {
+                    AuthRoutesV1::get();
+                });
             });
 
         });

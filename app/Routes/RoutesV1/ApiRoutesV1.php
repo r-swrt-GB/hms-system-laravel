@@ -136,10 +136,12 @@ class ApiRoutesV1
                 });
             });
 
-            // Profile
-            Route::get('/profile', [ProfileController::class, 'getUserProfile'])->name('profile.get');
-            Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-            Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+            Route::middleware('throttle:10,1')->group(function () {
+                // Profile
+                Route::get('/profile', [ProfileController::class, 'getUserProfile'])->name('profile.get');
+                Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+                Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+            });
         });
     }
 }

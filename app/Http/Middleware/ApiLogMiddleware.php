@@ -16,15 +16,24 @@ class ApiLogMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $startTime = microtime(true);
+
         $response = $next($request);
+
+        // Calculate the response time
+        $responseTime = microtime(true) - $startTime;
 
         $log = [
             'uri' => $request->getRequestUri(),
             'method' => $request->getMethod(),
             'request_body' => $request->all(),
             'response_body' => $response->getContent(),
+            'status_code' => $response->getStatusCode(),
+            'response_time' => round($responseTime * 1000, 2) . ' ms',
+            'success' => $response->isSuccessful(),
         ];
 
+        // Log the data
         Log::info(json_encode($log));
 
         return $response;
