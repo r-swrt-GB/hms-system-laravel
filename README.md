@@ -1,4 +1,4 @@
-# HMS-System API Documentation
+# Men In Code - HMS-System API Documentation
 
 ![HMS-System Logo](https://health-sciences.nwu.ac.za/sites/health-sciences.nwu.ac.za/files/styles/max_1300x1300/public/files/image/1.png?itok=LnMA_Ypy)
 
@@ -11,6 +11,7 @@
 6. [API Usage](#api-usage)
 7. [Windows Users](#windows-users)
 8. [Troubleshooting](#troubleshooting)
+8. [Contributors](#contributors)
 
 ## Introduction
 
@@ -143,3 +144,29 @@ If you encounter any issues:
    ```
 
 For further assistance, please open an issue in the GitHub repository.
+
+## Contributors
+
+Our group details:
+
+Group Name: Men In Code
+
+Group Member 1
+Name and surname: Henk Mooiman
+Student number: 41293584
+University Email Address: 41293584@mynwu.ac.za
+ 
+Group Member 2
+Name and surname: Theunis Kok
+Student number: 43113877
+University Email Address: 43113877@mynwu.ac.za
+ 
+Group Member 3
+Name and surname: Ruan van Heerden
+Student number: 41763882
+University Email Address: 41763882@mynwu.ac.za
+ 
+Group Member 4 (Group leader)
+Name and surname: Rikus Swart
+Student number: 42320755
+University Email Address: 42320755@mynwu.ac.za
