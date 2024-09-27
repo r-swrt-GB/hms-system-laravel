@@ -45,8 +45,8 @@ Ensure that your PHP installation has the required extensions for Laravel, such 
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-repo/hms-system.git
-   cd hms-system
+   git clone https://github.com/r-swrt-GB/hms-system-laravel.git
+   cd hms-system-laravel
    ```
 
 2. Copy the environment file:
@@ -86,7 +86,7 @@ Ensure that your PHP installation has the required extensions for Laravel, such 
    ./vendor/bin/sail artisan migrate --seed
    ```
 
-The application should now be running at `http://localhost`.
+The application should now be running at `http://localhost:8015`.
 
 ## Database Setup
 
@@ -105,7 +105,7 @@ The database is automatically set up when you run the migrations and seeders. Ho
 3. Access the Postman collection for this API using the following link:
    [HMS-System API Postman Collection](https://hms-system-team.postman.co/workspace/HMS-System-API-V1~a009c4f3-28d1-4824-a5d0-21653cd45f0b/collection/38045529-%20a28a93f5-1b5d-41e0-9768-a193cec78d3f?action=share&creator=38045529)
 
-4. In Postman, set the `{{base_url_docker}}` variable to `http://localhost` for making requests to the Docker setup.
+4. In Postman, set the `{{base_url_docker}}` variable to `http://localhost:8015` for making requests to the Docker setup.
 
 ## Windows Users
 
