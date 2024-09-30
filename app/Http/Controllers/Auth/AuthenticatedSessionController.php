@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): JsonResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
@@ -38,10 +38,11 @@ class AuthenticatedSessionController extends Controller
 
         $token = $user->createToken('authToken')->plainTextToken;
 
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
-        ]);
+        // Store the token in the session
+        session(['auth_token' => $token]);
+
+        // Redirect to the home page or dashboard
+        return Inertia::location(route('pages.home.index'));
     }
 
     /**

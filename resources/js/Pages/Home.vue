@@ -1,51 +1,20 @@
 <template>
-    <v-container>
-        <v-row>
-            <v-col>
-                <v-card>
-                    <v-card-title>
-                        Home
-                    </v-card-title>
-                    <v-card-text>
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-btn @click="login">Login</v-btn>
-                        <v-btn @click="dashboard">Dashboard</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-col>
-        </v-row>
-    </v-container>
+    <AppNav>
+        <h1>Welcome to the Dashboard</h1>
+        <p>This is your main content area.</p>
+    </AppNav>
 </template>
 
 <script>
-import axios from 'axios';
+import AppNav from "@/Layouts/AppNav.vue";
 
 export default {
-    name: 'Home',
-    props: {},
+    name: 'DashboardPage',
+    components: {
+        AppNav,
+    },
     data() {
-        return {};
-    },
-    methods: {
-        async login() {
-            try {
-                await axios.post(this.route('pages.login.index'));
-            } catch (error) {
-                console.error('Login error:', error);
-            }
-        },
-        async dashboard() {
-            try {
-                await axios.post(this.route('pages.login.index'));
-            } catch (error) {
-                console.error('Dashboard error:', error);
-            }
-        },
-    },
-}
+        return {}
+    }
+};
 </script>
-
-<style scoped>
-/* Add styles here */
-</style>

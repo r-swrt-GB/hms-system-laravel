@@ -4,6 +4,9 @@ namespace App\Routes;
 
 use App\Http\Controllers\AdminManagementController;
 use App\Http\Controllers\AssignmentsController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LecturerManagementController;
 use App\Http\Controllers\LoginController;
@@ -21,13 +24,21 @@ class PageRoutes
         Route::get('/', [LandingPageController::class, 'index'])->name('pages.landing-page');
 
         //Login page routes
-        Route::get('/login', [LoginController::class, 'index'])->name('pages.login.index');
+//        Route::get('/login', [LoginController::class, 'index'])->name('pages.login.index');
+
+        Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+            ->name('login');
+
+//        Route::get('register', [RegisteredUserController::class, 'create'])
+//            ->name('register');
 
         //Register page route
         Route::get('/register', [RegisterController::class, 'index'])->name('pages.register.index');
+        Route::get('/home', [HomeController::class, 'index'])->name('pages.home.index');
 
         // Authenticated routes
         Route::middleware('auth:sanctum')->group(function () {
+
 
             Route::prefix('/modules/{module}')->group(function () {
 
