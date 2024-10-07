@@ -20,6 +20,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string $remember_token
+ * @property string api_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -37,6 +38,7 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
+        'api_token',
     ];
 
     /**

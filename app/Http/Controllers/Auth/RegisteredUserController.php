@@ -59,6 +59,11 @@ class RegisteredUserController extends Controller
 
         $token = $user->createToken('authToken')->plainTextToken;
 
+        session(['auth_token' => $token]);
+
+        $user->api_token = $token;
+        $user->save();
+
         return response()->json([
             'user' => $user,
             'token' => $token,

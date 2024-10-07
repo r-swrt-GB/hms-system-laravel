@@ -22,15 +22,15 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
             HandleInertiaRequests::class,
+            StartSession::class,
             AddLinkHeadersForPreloadedAssets::class,
         ], prepend: [
             AddQueuedCookiesToResponse::class,
-            StartSession::class,
             ShareErrorsFromSession::class,
             SubstituteBindings::class,
         ]);
 
-        //
+        $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

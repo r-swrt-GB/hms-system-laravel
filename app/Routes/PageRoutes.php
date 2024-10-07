@@ -23,22 +23,20 @@ class PageRoutes
         //Landing page route
         Route::get('/', [LandingPageController::class, 'index'])->name('pages.landing-page');
 
-        //Login page routes
-//        Route::get('/login', [LoginController::class, 'index'])->name('pages.login.index');
+        Route::middleware('guest')->group(function () {
+            Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+                ->name('login');
 
-        Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-            ->name('login');
-
-//        Route::get('register', [RegisteredUserController::class, 'create'])
-//            ->name('register');
-
-        //Register page route
-        Route::get('/register', [RegisterController::class, 'index'])->name('pages.register.index');
-        Route::get('/home', [HomeController::class, 'index'])->name('pages.home.index');
+            //Register page route
+            Route::get('register', [RegisteredUserController::class, 'create'])
+                ->name('register');
+            Route::post('register', [RegisteredUserController::class, 'store']);
+        });
 
         // Authenticated routes
         Route::middleware('auth:sanctum')->group(function () {
 
+            Route::get('/home', [HomeController::class, 'index'])->name('pages.home.index');
 
             Route::prefix('/modules/{module}')->group(function () {
 

@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -30,19 +31,21 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
+        try {
+            $request->authenticate();
 
-        $user = $request->user();
+            $user = $request->user();
 
-        $user->tokens()->delete();
+            $user->tokens()->delete();
 
-        $token = $user->createToken('authToken')->plainTextToken;
+            $token = $user->createToken('authToken')->plainTextToken;
 
-        // Store the token in the session
-        session(['auth_token' => $token]);
+            $request->session()->regenerate();
 
-        // Redirect to the home page or dashboard
-        return Inertia::location(route('pages.home.index'));
+            return response()->json(['user' => $user, 'token' => $token]);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
     }
 
     /**

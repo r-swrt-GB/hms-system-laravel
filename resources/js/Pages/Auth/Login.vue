@@ -23,9 +23,23 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('api.auth.login'), {
-        onFinish: () => form.reset('password'),
-    });
+    axios.post(route('api.auth.login'), {
+        email: form.email,
+        password: form.password,
+    })
+        .then((response) => {
+            window.location.href = route('pages.home.index');
+        })
+        .catch((error) => {
+            if (error.response && error.response.status === 422) {
+                form.errors(error.response.data.errors);
+            } else {
+                console.error('Login failed:', error);
+            }
+        })
+        .finally(() => {
+            form.reset('password');
+        });
 };
 </script>
 
