@@ -1,23 +1,45 @@
 <template>
-    <v-container>
-        <v-row>
-            <v-col>
-                Hello from Lecturer Management!
-            </v-col>
-        </v-row>
-    </v-container>
+    <AppClean :app-bar-header="appBarHeader">
+        <lecturer-users-data-table
+            :lecturer-users="lecturerUsers"
+            @add-user="addUser"
+            @edit-user="editUser"
+            @delete-user="deleteUser"></lecturer-users-data-table>
+    </AppClean>
 </template>
 
 <script>
 import axios from 'axios';
+import AppClean from "@/Layouts/AppClean.vue";
+import LecturerUsersDataTable from "@/Components/Management/LecturerMangamenet/LecturerUsersDataTable.vue";
 
 export default {
     name: 'LecturerManagementPage',
-    props: {},
+    components: {LecturerUsersDataTable, AppClean},
+    props: {
+        appBarHeader: {
+            type: String,
+            required: false,
+            default: '',
+        },
+        lecturerUsers: {
+            type: Array,
+            required: true,
+            default: [],
+        }
+    },
     data() {
         return {};
     },
-    methods: {},
+    methods: {
+        addUser() {
+
+        }, editUser(user) {
+
+        }, deleteUser(user) {
+
+        }
+    },
 }
 </script>
 

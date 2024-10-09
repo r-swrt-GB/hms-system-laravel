@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\ModuleManagementController;
 use Illuminate\Support\Facades\Route;
 
 class AuthRoutesV1
@@ -37,26 +38,30 @@ class AuthRoutesV1
         });
 
         Route::middleware('auth')->group(function () {
-            Route::get('verify-email', EmailVerificationPromptController::class)
-                ->name('verification.notice');
+            Route::post('/create/user', [RegisteredUserController::class, 'createPendingUser'])->name('api.users.pending.create');
+            Route::patch('/edit/user/{user}', [RegisteredUserController::class, 'editUser'])->name('api.users.update');
+            Route::delete('/delete/user/{user}', [RegisteredUserController::class, 'deleteUser'])->name('api.users.delete');
 
-            Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-                ->middleware(['signed', 'throttle:6,1'])
-                ->name('verification.verify');
+        Route::get('verify-email', EmailVerificationPromptController::class)
+            ->name('verification.notice');
 
-            Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-                ->middleware('throttle:6,1')
-                ->name('verification.send');
+        Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+            ->middleware(['signed', 'throttle:6,1'])
+            ->name('verification.verify');
 
-            Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-                ->name('password.confirm');
+        Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+            ->middleware('throttle:6,1')
+            ->name('verification.send');
 
-            Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+        Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
+            ->name('password.confirm');
 
-            Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+        Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
-            Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-                ->name('logout');
-        });
-    }
+        Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+        Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+            ->name('logout');
+    });
+}
 }

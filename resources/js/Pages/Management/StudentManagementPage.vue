@@ -1,23 +1,46 @@
 <template>
-    <v-container>
-        <v-row>
-            <v-col>
-                Hello from student management page!
-            </v-col>
-        </v-row>
-    </v-container>
+    <AppClean :app-bar-header="appBarHeader">
+        <student-users-data-table :student-users="studentUsers"
+                                  @add-user="addUser"
+                                  @edit-user="editUser"
+                                  @delete-user="deleteUser"
+        ></student-users-data-table>
+    </AppClean>
 </template>
 
 <script>
 import axios from 'axios';
+import AppClean from "@/Layouts/AppClean.vue";
+import StudentUsersDataTable from "@/Components/Management/StudentManagement/StudentUsersDataTable.vue";
+import LecturerUsersDataTable from "@/Components/Management/LecturerMangamenet/LecturerUsersDataTable.vue";
 
 export default {
     name: 'StudentManagementPage',
-    props: {},
+    components: {LecturerUsersDataTable, StudentUsersDataTable, AppClean},
+    props: {
+        appBarHeader: {
+            type: String,
+            required: false,
+            default: '',
+        },
+        studentUsers: {
+            type: Array,
+            required: true,
+            default: [],
+        }
+    },
     data() {
         return {};
     },
-    methods: {},
+    methods: {
+        addUser() {
+
+        }, editUser(user) {
+
+        }, deleteUser(user) {
+
+        }
+    },
 }
 </script>
 

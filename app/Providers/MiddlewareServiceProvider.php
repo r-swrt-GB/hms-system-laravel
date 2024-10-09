@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Http\Middleware\ApiLogMiddleware;
-use App\Http\Middleware\AuthTokenCheckMiddleware;
 use App\Http\Middleware\ModuleAccessMiddleware;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckRole;
@@ -91,8 +91,8 @@ class MiddlewareServiceProvider extends ServiceProvider
             ApiLogMiddleware::class . ':apiLog',
         ]);
 
-        Route::middlewareGroup('authTokenCheck', [
-            AuthTokenCheckMiddleware::class . ':authTokenCheck',
+        Route::middlewareGroup('api-session', [
+            StartSession::class . ':api-session',
         ]);
     }
 

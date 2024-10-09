@@ -1,39 +1,51 @@
 <template>
     <v-app>
         <!-- Side Drawer -->
-        <v-navigation-drawer v-model="drawer" width="270">
-            <v-img
-                src="https://services.nwu.ac.za/sites/services.nwu.ac.za/files/files/designs-branding/NWU-Acronym-Logo-Purple-Digital0.png"
-                contain
-                style="margin: 12px"
-            ></v-img>
+        <v-navigation-drawer v-model="drawer" width="280" scrim>
+            <div class="logo-container">
+                <v-img
+                    class="logo"
+                    src="/assets/images/nwu-logo.png"
+                    contain
+                ></v-img>
+            </div>
 
             <div style="width: 100%; height: 1px; color: grey"></div>
 
             <v-list>
-                <v-list-group
-                    v-for="item in menuItems"
-                    :key="item.title"
-                    :prepend-icon="item.icon"
-                    :value="item.active"
-                >
-                    <template v-slot:activator="{ props }">
-                        <v-list-item v-bind="props" :title="item.title"></v-list-item>
-                    </template>
+                <template v-for="item in menuItems" :key="item.title">
+                    <!-- Render v-list-group for items with multiple sub-items -->
+                    <v-list-group
+                        v-if="item.items.length > 1"
+                        :prepend-icon="item.icon"
+                        :value="item.active"
+                    >
+                        <template v-slot:activator="{ props }">
+                            <v-list-item v-bind="props" :title="item.title"></v-list-item>
+                        </template>
 
+                        <v-list-item
+                            v-for="subItem in item.items"
+                            :key="subItem.title"
+                            :title="subItem.title"
+                            :prepend-icon="subItem.icon"
+                            @click="navigateTo(subItem.to)"
+                        ></v-list-item>
+                    </v-list-group>
+
+                    <!-- Render v-list-item directly for items with only one sub-item -->
                     <v-list-item
-                        v-for="subItem in item.items"
-                        :key="subItem.title"
-                        :to="subItem.to"
-                        :title="subItem.title"
-                        :prepend-icon="subItem.icon"
+                        v-else
+                        :prepend-icon="item.icon"
+                        :title="item.items[0].title"
+                        @click="navigateTo(item.items[0].to)"
                     ></v-list-item>
-                </v-list-group>
+                </template>
             </v-list>
         </v-navigation-drawer>
 
         <!-- App Bar -->
-        <v-app-bar app>
+        <v-app-bar app height="91" color="primary">
             <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
             <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -44,27 +56,33 @@
 
         <!-- Main Content -->
         <v-main>
-            <v-container fluid class="pa-6">
-                <slot></slot>
-            </v-container>
+            <slot></slot>
         </v-main>
     </v-app>
 </template>
 
 <script>
+import { Inertia } from '@inertiajs/inertia';
+
 export default {
     name: 'AppNav',
+    props: {
+        appBarHeader: {
+            type: String,
+            required: false,
+            default: '',
+        },
+    },
     data() {
         return {
             drawer: true,
             menuItems: [
                 {
-                    title: 'Dashboard',
-                    icon: 'mdi-view-dashboard',
-                    active: true,
+                    title: 'User Management',
+                    icon: 'mdi-book-outline',
+                    active: false,
                     items: [
-                        { title: 'Analytics', icon: 'mdi-chart-bar', to: '/dashboard/analytics' },
-                        { title: 'Overview', icon: 'mdi-eye', to: '/dashboard/overview' },
+                        {title: 'Modules', icon: 'mdi-book-outline', to: route('pages.management-modules')},
                     ],
                 },
                 {
@@ -72,8 +90,9 @@ export default {
                     icon: 'mdi-account-group',
                     active: false,
                     items: [
-                        { title: 'Users', icon: 'mdi-account', to: '/users' },
-                        { title: 'Roles', icon: 'mdi-shield-account', to: '/roles' },
+                        {title: 'Admins', icon: 'mdi-account-tie', to: route('pages.management-admins')},
+                        {title: 'Lecturers', icon: 'mdi-human-male-board', to: route('pages.management-lecturer')},
+                        {title: 'Students', icon: 'mdi-school', to: route('pages.management-students')},
                     ],
                 },
             ],
@@ -82,7 +101,7 @@ export default {
 
     computed: {
         pageTitle() {
-           return 'Dashboard';
+            return this.appBarHeader;
         },
     },
 
@@ -90,6 +109,17 @@ export default {
         toggleDrawer() {
             this.drawer = !this.drawer;
         },
+        navigateTo(path) {
+            Inertia.visit(path);
+        },
     },
 };
 </script>
+
+<style>
+.logo-container {
+    background-color: white;
+    padding: 12px;
+    border-bottom: 1px solid lightgrey;
+}
+</style>

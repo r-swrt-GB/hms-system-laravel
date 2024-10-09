@@ -12,7 +12,7 @@ class ApiRoutes
 {
     public static function get(): void
     {
-        Route::middleware('apiLog')->group(function () {
+        Route::middleware(['apiLog', 'api-session'])->group(function () {
 
             Route::prefix('v1/')->group(function () {
                 ApiRoutesV1::get();

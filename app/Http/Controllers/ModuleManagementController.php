@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Module;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -15,7 +16,12 @@ class ModuleManagementController extends Controller
 {
     public function index(Request $request)
     {
-        return Inertia::render('Management/ModuleManagementPage');
+        $user = Auth::user();
+        $modules = $user->modules()->get();
+
+        $users = User::all();
+
+        return Inertia::render('Management/ModuleManagementPage', ['appBarHeader' => 'Module Management', 'modules' => $modules, 'users' => $users]);
     }
 
     public function list(Request $request)

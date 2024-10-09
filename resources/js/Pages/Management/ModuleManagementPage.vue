@@ -1,19 +1,34 @@
 <template>
-    <v-container>
-        <v-row>
-            <v-col>
-                Hello from Module Management Page!
-            </v-col>
-        </v-row>
-    </v-container>
+    <AppClean :app-bar-header="appBarHeader">
+        <ModuleDataTable :modules="modules"></ModuleDataTable>
+    </AppClean>
 </template>
 
 <script>
 import axios from 'axios';
+import AppClean from "@/Layouts/AppClean.vue";
+import ModuleDataTable from "@/Components/Management/ModuleManagement/ModuleDataTable.vue";
 
 export default {
     name: 'ModuleManagementPage',
-    props: {},
+    components: {ModuleDataTable, AppClean},
+    props: {
+        appBarHeader: {
+            type: String,
+            required: false,
+            default: '',
+        },
+        modules: {
+            type: Array,
+            required: true,
+            default: [],
+        },
+        users: {
+            type: Array,
+            required: true,
+            default: [],
+        }
+    },
     data() {
         return {};
     },
