@@ -23,7 +23,7 @@
                             v-model="student.name"
                             :readonly="loading"
                             :rules="[rules.required]"
-                            variant="outlined"
+                            variant="solo"
                             density="compact"
                         ></v-text-field>
                     </v-col>
@@ -37,7 +37,7 @@
                             v-model="student.surname"
                             :readonly="loading"
                             :rules="[rules.required]"
-                            variant="outlined"
+                            variant="solo"
                             density="compact"
                         ></v-text-field>
                     </v-col>
@@ -52,7 +52,7 @@
                             v-model="student.email"
                             :readonly="loading"
                             :rules="[rules.required, rules.email]"
-                            variant="outlined"
+                            variant="solo"
                             density="compact"
                         ></v-text-field>
                     </v-col>
@@ -66,7 +66,7 @@
                             v-model="student.phone"
                             :readonly="loading"
                             :rules="[rules.required, rules.phone]"
-                            variant="outlined"
+                            variant="solo"
                             density="compact"
                         ></v-text-field>
                     </v-col>
@@ -81,7 +81,7 @@
                             v-model="student.studentNumber"
                             :readonly="loading"
                             :rules="[rules.required]"
-                            variant="outlined"
+                            variant="solo"
                             density="compact"
                         ></v-text-field>
                     </v-col>
@@ -113,8 +113,13 @@ export default {
             default: false,
         },
         studentData: {
-            type: Object,
             required: false,
+            default: {
+                first_name: '',
+                last_name: '',
+                email: '',
+                role: '',
+            }
         },
     },
     setup() {
