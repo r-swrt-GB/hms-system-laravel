@@ -51,6 +51,8 @@ export default {
             required: true
         }
     },
+    mounted(){
+        console.log("lectureUsers:", this.lecturerUsers)},
     data() {
         return {
             searchQuery: ''
