@@ -30,6 +30,7 @@ class Module extends Model
     protected $fillable = [
         'module_name',
         'code',
+        'description',
         'created_at',
         'updated_at',
     ];
@@ -54,6 +55,6 @@ class Module extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class,'user_modules');
+        return $this->belongsToMany(User::class, 'user_modules');
     }
 }
