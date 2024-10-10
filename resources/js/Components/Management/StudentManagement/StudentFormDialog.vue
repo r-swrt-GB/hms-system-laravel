@@ -1,103 +1,161 @@
 <template>
-    <v-dialog v-model="dialog" :max-width="600" persistent>
-        <v-card>
-            <v-card-title>
-                <v-icon class="mr-1">mdi-account</v-icon>
-                <span>Student Form</span>
-            </v-card-title>
+    <dialog-baseline
+        :loading="loading"
+        @primaryButtonClicked="saveStudent"
+        @secondaryButtonClicked="closeDialog">
+        <template #toolbar-icon>
+            mdi-shield-account
+        </template>
 
-            <v-divider></v-divider>
+        <template #toolbar-title>
+            Student Form
+        </template>
 
-            <v-card-text>
-                <v-form ref="studentForm">
-                    <v-text-field
-                        label="Name"
-                        v-model="student.name"
-                        :rules="[rules.required]"
-                        required
-                    ></v-text-field>
-                    <v-text-field
-                        label="Surname"
-                        v-model="student.surname"
-                        :rules="[rules.required]"
-                        required
-                    ></v-text-field>
-                    <v-text-field
-                        label="Email"
-                        v-model="student.email"
-                        :rules="[rules.required, rules.email]"
-                        required
-                    ></v-text-field>
-                    <v-text-field
-                        label="Phone"
-                        v-model="student.phone"
-                        :rules="[rules.required, rules.phone]"
-                        required
-                    ></v-text-field>
-                    <v-text-field
-                        label="Student Number"
-                        v-model="student.studentNumber"
-                        :rules="[rules.required]"
-                        required
-                    ></v-text-field>
-                </v-form>
-            </v-card-text>
+        <template #dialog-content>
+            <v-form ref="studentForm" @submit.prevent>
+                <v-row>
+                    <v-col cols="6">
+                        <!-- First Name -->
+                        <div class="text-field-label">
+                            Name
+                        </div>
+                        <v-text-field
+                            v-model="student.name"
+                            :readonly="loading"
+                            :rules="[rules.required]"
+                            variant="outlined"
+                            density="compact"
+                        ></v-text-field>
+                    </v-col>
 
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <!-- Close Button -->
-                <v-btn variant="plain" @click="closeDialog">
-                    Close
-                </v-btn>
-                <!-- Save Button -->
-                <v-btn color="primary" :loading="loading" @click="saveStudent">
-                    Save
-                </v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
+                    <v-col cols="6">
+                        <!-- Surname -->
+                        <div class="text-field-label">
+                            Surname
+                        </div>
+                        <v-text-field
+                            v-model="student.surname"
+                            :readonly="loading"
+                            :rules="[rules.required]"
+                            variant="outlined"
+                            density="compact"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="6">
+                        <!-- Email -->
+                        <div class="text-field-label">
+                            Email
+                        </div>
+                        <v-text-field
+                            v-model="student.email"
+                            :readonly="loading"
+                            :rules="[rules.required, rules.email]"
+                            variant="outlined"
+                            density="compact"
+                        ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="6">
+                        <!-- Phone -->
+                        <div class="text-field-label">
+                            Phone
+                        </div>
+                        <v-text-field
+                            v-model="student.phone"
+                            :readonly="loading"
+                            :rules="[rules.required, rules.phone]"
+                            variant="outlined"
+                            density="compact"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12">
+                        <!-- Student Number -->
+                        <div class="text-field-label">
+                            Student Number
+                        </div>
+                        <v-text-field
+                            v-model="student.studentNumber"
+                            :readonly="loading"
+                            :rules="[rules.required]"
+                            variant="outlined"
+                            density="compact"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+            </v-form>
+        </template>
+
+        <template #primary-button-text>
+            Save
+        </template>
+
+        <template #secondary-button-text>
+            Close
+        </template>
+
+    </dialog-baseline>
 </template>
 
 <script>
+import { useForm } from "@inertiajs/vue3";
+import BaselineDialog from "@/Components/BaselineDialog.vue";
+import DialogBaseline from "@/Components/BaselineDialog.vue";
 export default {
     name: "StudentFormDialog",
+    components: {DialogBaseline, BaselineDialog },
     props: {
         loading: {
             required: false,
             default: false,
         },
+        studentData: {
+            type: Object,
+            required: false,
+        },
+    },
+    setup() {
+        const student = useForm({
+            name: '',
+            surname: '',
+            email: '',
+            phone: '',
+            studentNumber: '',
+        });
+
+        return { student };
+    },
+    mounted() {
+        if (this.studentData) {
+            this.student.name = this.studentData.name;
+            this.student.surname = this.studentData.surname;
+            this.student.email = this.studentData.email;
+            this.student.phone = this.studentData.phone;
+            this.student.studentNumber = this.studentData.studentNumber;
+        }
     },
     data: () => ({
-        dialog: true,
-        student: {
-            name: "",
-            surname: "",
-            email: "",
-            phone: "",
-            studentNumber: "",
-        },
         rules: {
             required: (value) => !!value || "Required.",
-            email: (value) => /.+@.+\..+/.test(value) || "E-mail must be valid.",
-            phone: (value) =>
-                /^\+?\d{10,15}$/.test(value) || "Phone number must be valid.",
+            email: (value) => /.+@.+\..+/.test(value) || "Invalid email address.",
+            phone: (value) => /^\+?\d{10,15}$/.test(value) || "Invalid phone number.",
         },
     }),
     methods: {
-        closeDialog() {
-            this.dialog = false;
-        },
-        saveStudent() {
-            const form = this.$refs.studentForm;
-            if (form.validate()) {
-                // Emit the student data for saving
+        async saveStudent() {
+            const { valid } = await this.$refs.studentForm.validate();
+            if (valid) {
                 this.$emit("saveStudent", this.student);
-                this.dialog = false;
             }
+        },
+        closeDialog() {
+            this.$emit("closeDialog");
         },
     },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

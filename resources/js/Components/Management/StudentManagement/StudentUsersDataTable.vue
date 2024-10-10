@@ -73,16 +73,13 @@ export default {
             this.searchQuery = value;
         },
         editUser(user) {
-            // Implement edit functionality
-            this.$emit('editUser',user);
+            this.$emit('editUser', user);
         },
         deleteUser(user) {
-            // Implement delete functionality
-            this.$emit('deleteUser',user);
+            this.$emit('deleteUser', user);
         },
         addUser() {
-            // Implement delete functionality
-            this.$emit('addUser');
+            this.$emit('addUser');  // Emits 'addUser' when "Add Student" is clicked
         }
     }
 };

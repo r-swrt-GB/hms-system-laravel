@@ -1,10 +1,18 @@
 <template>
     <AppClean :app-bar-header="appBarHeader">
-        <student-users-data-table :student-users="studentUsers"
-                                  @add-user="addUser"
-                                  @edit-user="editUser"
-                                  @delete-user="deleteUser"
+        <student-users-data-table
+            :student-users="studentUsers"
+            @add-user="openStudentDialog"
+            @edit-user="editUser"
+            @delete-user="deleteUser"
         ></student-users-data-table>
+
+        <StudentFormDialog
+            v-if="showStudentDialog"
+            :loading="loading"
+            @saveStudent="saveStudent"
+            @closeDialog="closeStudentDialog"
+        />
     </AppClean>
 </template>
 
@@ -12,11 +20,14 @@
 import axios from 'axios';
 import AppClean from "@/Layouts/AppClean.vue";
 import StudentUsersDataTable from "@/Components/Management/StudentManagement/StudentUsersDataTable.vue";
-import LecturerUsersDataTable from "@/Components/Management/LecturerMangamenet/LecturerUsersDataTable.vue";
-
+import StudentFormDialog from "@/Components/Management/StudentManagement/StudentFormDialog.vue";
 export default {
     name: 'StudentManagementPage',
-    components: {LecturerUsersDataTable, StudentUsersDataTable, AppClean},
+    components: {
+        AppClean,
+        StudentUsersDataTable,
+        StudentFormDialog
+    },
     props: {
         appBarHeader: {
             type: String,
@@ -30,20 +41,41 @@ export default {
         }
     },
     data() {
-        return {};
+        return {
+            showStudentDialog: false,
+            loading: false
+        };
     },
     methods: {
-        addUser() {
+        openStudentDialog() {
+            console.log("Add Student Button Clicked!");
+            this.showStudentDialog = true;
+        },
+        editUser(user) {
 
-        }, editUser(user) {
+        },
+        deleteUser(user) {
 
-        }, deleteUser(user) {
+        },
+        saveStudent(studentData) {
+            this.loading = true;
+            axios.post('/api/students', studentData)
+                .then(response => {
 
+                    this.showStudentDialog = false;
+                    this.loading = false;
+                })
+                .catch(error => {
+                    this.loading = false;
+                });
+        },
+        closeStudentDialog() {
+            this.showStudentDialog = false;
         }
-    },
+    }
 }
 </script>
 
 <style scoped>
-/* Add styles here */
+/* Add styles here */
 </style>
