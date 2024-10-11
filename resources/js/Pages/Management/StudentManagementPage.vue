@@ -156,6 +156,7 @@ export default {
         closeStudentDialog() {
             this.showStudentDialog = false;
         },
+        //this closes the dialog
         closeDeleteDialog() {
             this.showDeleteDialog = false;
         },
