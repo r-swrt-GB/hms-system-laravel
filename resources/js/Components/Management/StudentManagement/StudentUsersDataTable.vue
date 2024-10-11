@@ -41,7 +41,7 @@ import DataTableExplorerBaseline from '../../BaselineDataTable.vue';
 
 export default {
     name: 'StudentUsersDataTable',
-    emits: ['editModuleClicked'],
+    emits: ['editUser', 'deleteUser', 'addUser'],
     components: {
         DataTableExplorerBaseline
     },
@@ -77,6 +77,7 @@ export default {
             this.$emit('editUser', user);
         },
         deleteUser(user) {
+            console.log('From datatable:', user)
             this.$emit('deleteUser', user);
         },
         addUser() {

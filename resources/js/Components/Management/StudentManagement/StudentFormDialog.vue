@@ -1,5 +1,6 @@
 <template>
     <dialog-baseline
+        v-model="dialog"
         :loading="loading"
         @primaryButtonClicked="saveStudent"
         @secondaryButtonClicked="closeDialog">
@@ -20,7 +21,7 @@
                             Name
                         </div>
                         <v-text-field
-                            v-model="student.name"
+                            v-model="student.first_name"
                             :readonly="loading"
                             :rules="[rules.required]"
                             variant="solo"
@@ -34,7 +35,7 @@
                             Surname
                         </div>
                         <v-text-field
-                            v-model="student.surname"
+                            v-model="student.last_name"
                             :readonly="loading"
                             :rules="[rules.required]"
                             variant="solo"
@@ -43,7 +44,7 @@
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="6">
+                    <v-col cols="12">
                         <!-- Email -->
                         <div class="text-field-label">
                             Email
@@ -52,20 +53,6 @@
                             v-model="student.email"
                             :readonly="loading"
                             :rules="[rules.required, rules.email]"
-                            variant="solo"
-                            density="compact"
-                        ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="6">
-                        <!-- Phone -->
-                        <div class="text-field-label">
-                            Phone
-                        </div>
-                        <v-text-field
-                            v-model="student.phone"
-                            :readonly="loading"
-                            :rules="[rules.required, rules.phone]"
                             variant="solo"
                             density="compact"
                         ></v-text-field>
@@ -112,7 +99,7 @@ export default {
             required: false,
             default: false,
         },
-        studentData: {
+        student: {
             required: false,
             default: {
                 first_name: '',
@@ -121,28 +108,31 @@ export default {
                 role: '',
             }
         },
-    },
-    setup() {
-        const student = useForm({
-            name: '',
-            surname: '',
-            email: '',
-            phone: '',
-            studentNumber: '',
-        });
-
-        return { student };
-    },
-    mounted() {
-        if (this.studentData) {
-            this.student.name = this.studentData.name;
-            this.student.surname = this.studentData.surname;
-            this.student.email = this.studentData.email;
-            this.student.phone = this.studentData.phone;
-            this.student.studentNumber = this.studentData.studentNumber;
+        isUpdate: {
+            required: true,
         }
     },
+    setup() {
+        // const student = useForm({
+        //     name: '',
+        //     surname: '',
+        //     email: '',
+        //     studentNumber: '',
+        // });
+        //
+        // return { student };
+    },
+    // mounted() {
+    //     if (this.studentData) {
+    //         this.student.name = this.studentData.first_name;
+    //         this.student.surname = this.studentData.last_name;
+    //         this.student.email = this.studentData.email;
+    //         this.student.phone = this.studentData.phone;
+    //         this.student.studentNumber = this.studentData.studentNumber;
+    //     }
+    // },
     data: () => ({
+        dialog: true,
         rules: {
             required: (value) => !!value || "Required.",
             email: (value) => /.+@.+\..+/.test(value) || "Invalid email address.",
@@ -153,7 +143,12 @@ export default {
         async saveStudent() {
             const { valid } = await this.$refs.studentForm.validate();
             if (valid) {
-                this.$emit("saveStudent", this.student);
+                if(this.isUpdate) {
+                    this.$emit("editStudent", this.student);
+                }
+                else {
+                    this.$emit("saveStudent", this.student);
+                }
             }
         },
         closeDialog() {

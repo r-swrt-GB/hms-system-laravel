@@ -3,16 +3,19 @@
         <student-users-data-table
             :student-users="studentUsers"
             @add-user="openStudentDialog"
-            @edit-user="editStudent"
-            @delete-user="deleteStudent"
+            @edit-user="openEditDialog"
+            @delete-user="openDeleteDialog"
         ></student-users-data-table>
 
         <StudentFormDialog
             v-if="showStudentDialog"
             :loading="loading"
+            :student="selectedStudent"
+            :isUpdate="isUpdate"
             @saveStudent="saveStudent"
+            @editStudent="editStudent"
             @closeDialog="closeStudentDialog"
-        />
+        ></StudentFormDialog>
 
         <DeleteStudentDialog
             v-if="showDeleteDialog"
@@ -21,6 +24,8 @@
             @deleteStudentClicked="deleteStudent"
             @dialogClosed="closeDeleteDialog"
         ></DeleteStudentDialog>
+
+
     </AppClean>
 </template>
 
@@ -29,13 +34,11 @@ import axios from 'axios';
 import AppClean from "@/Layouts/AppClean.vue";
 import StudentUsersDataTable from "@/Components/Management/StudentManagement/StudentUsersDataTable.vue";
 import StudentFormDialog from "@/Components/Management/StudentManagement/StudentFormDialog.vue";
-import DeleteUserForm from "@/Pages/Profile/Partials/DeleteUserForm.vue";
 import DeleteStudentDialog from "@/Components/Management/StudentManagement/DeleteStudentDialog.vue";
 export default {
     name: 'StudentManagementPage',
     components: {
         DeleteStudentDialog,
-        DeleteUserForm,
         AppClean,
         StudentUsersDataTable,
         StudentFormDialog
@@ -54,7 +57,10 @@ export default {
     },
     data() {
         return {
+            isUpdate: false,
             showStudentDialog: false,
+            showDeleteDialog: false,
+            showEditDialog: false,
             loading: false,
             selectedStudent: {
                 first_name: '',
@@ -67,13 +73,25 @@ export default {
     methods: {
         openStudentDialog() {
             console.log("Add Student Button Clicked!");
+            this.isUpdate = false;
             this.showStudentDialog = true;
         },
+        openEditDialog(student) {
+            this.isUpdate = true;
+            this.selectedStudent = student;
+            this.showStudentDialog = true;
+        },
+        openDeleteDialog(student) {
+            console.log("Delete Student Button Clicked!");
+            this.selectedStudent = student;
+            this.showDeleteDialog = true;
+        },
         async editStudent(student) {
+            this.loading = true;
             try {
-                const repsonse = await axios.patch('/api/v1/edit/user/{user}', {
-                    first_name: student.name,
-                    last_name: student.surname,
+                const response = await axios.patch(`/api/v1/edit/user/${student.id}`, {
+                    first_name: student.first_name,
+                    last_name: student.last_name,
                     email: student.email,
                     role: 'student',
                 });
@@ -117,10 +135,10 @@ export default {
         },
         async deleteStudent(student) {
             this.loading = true;
+            console.log(student)
             try {
                 const response = await axios.delete(`/api/v1/delete/user/${student.id}`);
 
-                // Remove the student from the list
                 this.studentUsers = this.studentUsers.filter(u => u.id !== student.id);
 
                 console.log(response.data.message);
@@ -140,7 +158,7 @@ export default {
         },
         closeDeleteDialog() {
             this.showDeleteDialog = false;
-        }
+        },
     }
 }
 </script>
