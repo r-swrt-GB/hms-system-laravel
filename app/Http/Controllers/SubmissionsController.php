@@ -16,11 +16,15 @@ use PhpParser\Node\Expr\AssignOp\Mod;
 
 class SubmissionsController extends Controller
 {
-    public function index(Request $request, Module $module)
+    public function index(Request $request, Module $module, Assignment $assignment)
     {
-        $module->load('assignments');
+        $submissions = $assignment->submissions()->with('users')->get();
 
-        return Inertia::render('Submissions/SubmissionsPage', ['module' => $module]);
+        return Inertia::render('Submissions/SubmissionsPage', [
+            'module' => $module,
+            'assignment' => $assignment,
+            'submissions' => $submissions,
+        ]);
     }
 
     public function getSubmissionPage(Request $request, Submission $submission)
@@ -139,10 +143,10 @@ class SubmissionsController extends Controller
         }
     }
 
-    public function delete(Request $request, Module $module, Submission $submission)
+    public function delete(Request $request, Module $module, Assignment $assignment, Submission $submission)
     {
         try {
-            $submission->user()->detach();
+            $submission->users()->detach();
 
             foreach ($submission->files as $file) {
                 Storage::disk($file->disk)->delete($file->key);

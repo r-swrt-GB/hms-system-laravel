@@ -1,6 +1,7 @@
 <template>
     <dialog-baseline
         :loading="loading"
+        :primary-button-disabled="primaryButtonDisabled"
         @primaryButtonClicked="addAssignment"
         @secondaryButtonClicked="closeDialog()">
         <template #toolbar-icon>
@@ -21,12 +22,11 @@
                         </div>
                         <v-text-field
                             v-model="assignment.title"
-                            :readonly="loading"
+                            :readonly="readOnly"
                             :rules="[rules.required]"
                             density="compact"
                             autofocus
                             variant="solo"
-                            clearable
                         ></v-text-field>
                     </v-col>
 
@@ -37,10 +37,10 @@
                         </div>
                         <v-text-field
                             v-model="assignment.max_grade"
+                            :readonly="readOnly"
                             :rules="[rules.required]"
                             density="compact"
                             variant="solo"
-                            clearable
                             type="number"
                         ></v-text-field>
                     </v-col>
@@ -54,6 +54,7 @@
                         </div>
                         <v-textarea
                             v-model="assignment.description"
+                            :readonly="readOnly"
                             :rules="[rules.required]"
                             density="compact"
                             variant="solo"
@@ -62,24 +63,24 @@
                 </v-row>
 
                 <v-row>
-                    <v-col cols="4">
+                    <v-col cols="6">
                         <!-- Minimum Videos -->
                         <div class="text-field-label">
                             Minimum Videos
                         </div>
                         <v-text-field
                             v-model="assignment.min_videos"
+                            :readonly="readOnly"
                             :rules="[rules.required]"
                             density="compact"
                             variant="solo"
-                            clearable
                             type="number"
                             min="1"
                             :value="assignment.min_videos || 1"
                         ></v-text-field>
                     </v-col>
 
-                    <v-col cols="4">
+                    <v-col cols="6">
                         <!-- Maximum Videos -->
                         <div class="text-field-label">
                             Maximum Videos
@@ -87,16 +88,18 @@
                         <v-text-field
                             v-model="assignment.max_videos"
                             :rules="[rules.required]"
+                            :readonly="readOnly"
                             density="compact"
                             variant="solo"
-                            clearable
                             type="number"
                             min="1"
                             :value="assignment.max_videos || 3"
                         ></v-text-field>
                     </v-col>
+                </v-row>
 
-                    <v-col cols="4">
+                <v-row>
+                    <v-col cols="12">
                         <!-- Max Video Length (in minutes) -->
                         <div class="text-field-label">
                             Max Video Length (minutes)
@@ -104,9 +107,9 @@
                         <v-text-field
                             v-model="assignment.max_video_length"
                             :rules="[rules.required]"
+                            :readonly="readOnly"
                             density="compact"
                             variant="solo"
-                            clearable
                             type="number"
                             min="1"
                             :value="assignment.max_video_length || 8"
@@ -124,11 +127,11 @@
                             @click="showOpenPicker"
                             :model-value="openDate ?? formatDate(assignment.open_date) ?? ''"
                             :rules="[rules.required]"
+                            :readonly="readOnly"
                             label="Open Date"
                             readonly
                             density="compact"
                             variant="solo"
-                            clearable
                         ></v-text-field>
                     </v-col>
 
@@ -141,11 +144,11 @@
                             @click="showDuePicker"
                             :model-value="dueDate ??  formatDate(assignment.due_date) ?? ''"
                             :rules="[rules.required]"
+                            :readonly="readOnly"
                             label="Due Date"
                             readonly
                             density="compact"
                             variant="solo"
-                            clearable
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -173,6 +176,10 @@ export default {
         DialogBaseline,
     },
     props: {
+        readOnly: {
+          required: false,
+          default: false,
+        },
         dueDate: {
             required: false,
         },
@@ -194,7 +201,11 @@ export default {
         },
         update: {
             required: true,
-        }
+        },
+        primaryButtonDisabled: {
+            required: false,
+            default: false,
+        },
     },
     data() {
         return {

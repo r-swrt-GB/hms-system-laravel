@@ -25,7 +25,7 @@
                             variant="flat"
                             color="primary"
                             @click="onAddLibraryItem">
-                            <v-icon class="pr-1">mdi-plus-box-multiple</v-icon>
+                            <v-icon class="pr-1">{{ actionButtonIcon ? 'mdi-plus-box-multiple' : 'mdi-information-outline' }}</v-icon>
                             <slot name="add-library-item-action"></slot>
                         </v-btn>
                     </div>
@@ -50,6 +50,10 @@ export default {
             default: false,
         },
         actionButton: {
+            type: Boolean,
+            default: true,
+        },
+        actionButtonIcon: {
             type: Boolean,
             default: true,
         },

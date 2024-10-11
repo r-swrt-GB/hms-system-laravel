@@ -35,6 +35,7 @@
                     v-if="primaryButton"
                     :color="useDefaultColor ? '#942028' : 'primary'"
                     :loading="loading"
+                    :disabled="primaryButtonDisabled"
                     variant="elevated"
                     type="submit"
                     @click="$emit('primaryButtonClicked')">
@@ -52,6 +53,10 @@ export default {
     name: 'DialogBaseline',
     mixins: [],
     props: {
+        primaryButtonDisabled: {
+            required: false,
+            default: false,
+        },
         maxWidth: {
             required: false,
             default: 600,
