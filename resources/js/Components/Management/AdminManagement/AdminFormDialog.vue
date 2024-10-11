@@ -67,6 +67,7 @@ export default {
       formData: {
           required: false ,
           default : {
+              id: -1,
               name: '',
               surname: '',
               email: '',}
@@ -85,17 +86,25 @@ export default {
         ],
         emailRules: [
             v => !!v || 'Email is required',
-            v => /.+@.+\..+/.test(v) || 'Email must be valid',
+            v => /.+@.+\..+/.test(v) || 'Email must be valid' || 'lowercase Email only',
         ],
     }),
     methods: {
         cancel() {
-            this.formDialog = false;  // Close the dialog
+            this.formDialog = false;
         },
         save() {
             if (this.$refs.form.validate()) {
-                // Handle the form submission
                 console.log('Form Data:', this.formData);
+
+                if(this.formData.id == null)
+                {
+                    this.$emit('addUser', this.formData);
+                }
+                else
+                {
+                    this.$emit('editUser', this.formData);
+                }
                 this.formDialog = false;  // Close the dialog after saving
             }
         },

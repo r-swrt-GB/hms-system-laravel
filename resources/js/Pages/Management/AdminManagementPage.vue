@@ -6,16 +6,29 @@
             @add-user="addUser"
             @edit-user="editUser"
             @delete-user="deleteUser"
-        ></AdminUsersDataTable>
+        />
 
         <!-- User Form Dialog -->
         <UserFormDialog
             v-model="showDialog"
             :form-data="formData"
             :key="dialogKey"
-            @primaryButtonClicked="saveUser"
+            @add-user="saveUser"
+            @edit-user="editSaveUser"
             @secondaryButtonClicked="closeDialog"
         />
+
+        <!-- Admin Delete Dialog -->
+        <AdminDeleteDialog
+            v-model="showDeleteDialog"
+            @close="closeDeleteDialog"
+            @confirm="handleConfirmDelete"
+        />
+
+        <!-- Snacbar Dialog -->
+        <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
+            {{ snackbar.message }}
+        </v-snackbar>
     </AppClean>
 </template>
 
@@ -24,10 +37,16 @@ import axios from 'axios';
 import AppClean from "@/Layouts/AppClean.vue";
 import AdminUsersDataTable from "@/Components/Management/AdminManagement/AdminUsersDataTable.vue";
 import UserFormDialog from "@/Components/Management/AdminManagement/AdminFormDialog.vue";
+import AdminDeleteDialog from "@/Components/Management/AdminManagement/AdminDeleteDialog.vue";
 
 export default {
     name: 'AdminManagementPage',
-    components: { UserFormDialog, AdminUsersDataTable, AppClean },
+    components: {
+        AdminDeleteDialog,
+        UserFormDialog,
+        AdminUsersDataTable,
+        AppClean,
+    },
     props: {
         appBarHeader: {
             type: String,
@@ -42,69 +61,151 @@ export default {
     },
     data() {
         return {
-            showDialog: false, // Controls dialog visibility
+            showDeleteDialog: false,
+            showDialog: false,
             formData: {
                 name: '',
                 surname: '',
                 email: '',
             },
-            editMode: false, // Tracks whether it's in edit mode or add mode
-            dialogKey: 0, // Add a key to trigger re-render
+            userToDelete: null,
+            editMode: false,
+            dialogKey: 0,
+            snackbar: {
+                show: false,
+                message: '',
+                color: 'success',
+                timeout: 3000
+            },
         };
     },
     methods: {
         // Open the dialog for adding a new user
         addUser() {
-            this.resetForm(); // Reset the form data
-            this.editMode = false; // Not in edit mode
-            this.dialogKey += 1; // Change the key to force dialog re-render
-            this.$nextTick(() => { // Ensure form reset happens before dialog opens
-                this.showDialog = true; // Show the dialog after reset
+            this.resetForm();
+            this.editMode = false;
+            this.dialogKey += 1;
+            this.$nextTick(() => {
+                this.showDialog = true;
             });
         },
 
         // Open the dialog for editing an existing user
         editUser(user) {
-            this.formData = { name: `${user.first_name}`, surname: `${user.last_name}`, email: `${user.email}` }; // Populate form with user data
-            this.editMode = true; // Switch to edit mode
-            this.dialogKey += 1; // Change the key to force dialog re-render
-            this.$nextTick(() => { // Show dialog after form population
+            this.formData = {
+                id: `${user.id}`,
+                name: `${user.first_name}`,
+                surname: `${user.last_name}`,
+                email: `${user.email}`,
+            };
+            this.editMode = true;
+            this.dialogKey += 1;
+            this.$nextTick(() => {
                 this.showDialog = true;
             });
         },
 
-        // Delete user logic (you can implement the actual delete logic here)
+        // Trigger the delete confirmation dialog
         deleteUser(user) {
-            console.log('Deleting user:', user);
-            // Example: axios.delete(`/api/users/${user.id}`);
+            this.userToDelete = user;
+            this.openDeleteDialog();
         },
 
-        // Handle saving the user (both for add and edit modes)
-        saveUser(localFormData) {
-            if (this.editMode) {
-                console.log('Editing user:', localFormData);
-                // Example: axios.patch(`/api/users/${localFormData.id}`, localFormData);
-            } else {
-                console.log('Adding new user:', localFormData);
-                // Example: axios.post('/api/users', localFormData);
+        // Open the delete dialog
+        openDeleteDialog() {
+            this.showDeleteDialog = true;
+        },
+
+        // Close the delete dialog
+        closeDeleteDialog() {
+            this.showDeleteDialog = false;
+            this.userToDelete = null;
+        },
+
+        // Handle confirming deletion
+        handleConfirmDelete() {
+            if (this.userToDelete) {
+                axios
+                    .delete(`/api/v1/delete/user/${this.userToDelete.id}`)
+                    .then((response) => {
+                        console.log('User deleted successfully:', response.data);
+                        this.closeDeleteDialog();
+                        this.snackbar.message = "Admin successfully deleted!";
+                        this.snackbar.color = "success";
+                        this.snackbar.show = true;
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        console.error('Error deleting user:', error);
+                        this.snackbar.message = "Admin could not be deleted!";
+                        this.snackbar.color = "error";
+                        this.snackbar.show = true;
+                    });
             }
-
-            // Close the dialog after saving
-            this.closeDialog();
         },
 
-        // Close the dialog and reset the form
+        async editSaveUser(user)
+        {
+            try {
+                const response = await axios.patch(`/api/v1/edit/user/${user.id}`, {
+                    id: user.id,
+                    first_name: user.name,
+                    last_name: user.surname,
+                    email: user.email,
+                });
+                this.snackbar.message = "Admin successfully updated!";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
+                window.location.reload();
+            } catch (error) {
+                this.snackbar.message = "Admin could not be updated!";
+                console.log(error)
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
+            } finally {
+                this.showDialog = false;
+            }
+        },
+
+        async saveUser(user) {
+
+                console.log("from user page: ",user)
+                try {
+                    const response = await axios.post('/api/v1/create/user', {
+                        first_name: user.name,
+                        last_name: user.surname,
+                        email: user.email,
+                        role: 'admin'
+                    });
+                    this.snackbar.message = "Admin successfully added!";
+                    this.snackbar.color = "success";
+                    this.snackbar.show = true;
+                    window.location.reload();
+                } catch (error) {
+                    this.snackbar.message = "Admin could not be added!";
+                    this.snackbar.color = "error";
+                    this.snackbar.show = true;
+                } finally {
+                    this.closeDialog();
+                }
+
+        },
+
+        // Close the form dialog and reset form
         closeDialog() {
-            this.showDialog = false; // Hide the dialog first
+            this.showDialog = false;
             this.$nextTick(() => {
-                this.resetForm(); // Reset form data after the dialog is closed
+                this.resetForm();
             });
         },
 
         // Reset the form data
         resetForm() {
-            this.formData = { name: '', surname: '', email: '' }; // Clear form data
+            this.formData = { name: '', surname: '', email: '' };
         },
     },
 };
 </script>
+
+<style scoped>
+</style>
