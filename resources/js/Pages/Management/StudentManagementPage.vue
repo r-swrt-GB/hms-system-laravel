@@ -111,8 +111,8 @@ export default {
             this.loading = true;
             try {
                 const response = await axios.post('/api/v1/create/user', {
-                    first_name: student.name,
-                    last_name: student.surname,
+                    first_name: student.first_name,
+                    last_name: student.last_name,
                     email: student.email,
                     role: 'student',
                 });
@@ -156,6 +156,7 @@ export default {
         closeStudentDialog() {
             this.showStudentDialog = false;
         },
+        //this closes the dialog
         closeDeleteDialog() {
             this.showDeleteDialog = false;
         },
