@@ -30,6 +30,7 @@ import AppClean from "@/Layouts/AppClean.vue";
 import ModuleDataTable from "@/Components/Management/ModuleManagement/ModuleDataTable.vue";
 import ModuleFormDialog from "@/Components/Management/ModuleManagement/ModuleFormDialog.vue";
 import DeleteModuleDialog from "@/Components/Management/ModuleManagement/DeleteModuleDialog.vue";
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     name: 'ModuleManagementPage',
@@ -140,7 +141,7 @@ export default {
             }
         },
         async viewModule(module) {
-
+            Inertia.visit(route('pages.assignments', { module: module }));
         },
         clearSelectedModule() {
             this.selectedModule = {

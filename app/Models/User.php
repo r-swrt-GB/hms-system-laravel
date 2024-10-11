@@ -93,10 +93,10 @@ class User extends Authenticatable
     // Relationship with Notification
     public function notifications()
     {
-        return $this->hasMany(Notification::class);
+        return $this->belongsToMany(Notification::class,'user_on_notification');
     }
 
-    public function groups()
+    public function groups(): BelongsToMany
     {
         return $this->belongsToMany(Group::class, 'user_groups');
     }

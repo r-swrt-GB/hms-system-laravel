@@ -12,12 +12,15 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use PhpParser\Node\Expr\AssignOp\Mod;
 
 class SubmissionsController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, Module $module)
     {
-        return Inertia::render('Submissions/Submissions');
+        $module->load('assignments');
+
+        return Inertia::render('Submissions/SubmissionsPage', ['module' => $module]);
     }
 
     public function getSubmissionPage(Request $request, Submission $submission)
