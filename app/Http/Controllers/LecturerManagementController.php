@@ -12,7 +12,6 @@ class LecturerManagementController extends Controller
     public function index(Request $request)
     {
         $lecturerUsers  = UserManagement::getAllLecturers();
-
         return Inertia::render('Management/LecturerManagementPage', ['appBarHeader' => 'Lecturer Management', 'lecturerUsers' => $lecturerUsers]);
     }
 }
