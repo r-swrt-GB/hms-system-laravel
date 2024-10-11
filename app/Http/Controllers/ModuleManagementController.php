@@ -70,10 +70,14 @@ class ModuleManagementController extends Controller
         try {
             $validatedData = $request->validate([
                 'module_name' => 'required|string|max:255',
-                'code' => 'required|string|unique:modules,code'
+                'code' => 'required|string|unique:modules,code',
+                'description' => 'required|string'
             ]);
 
             $module = Module::create($validatedData);
+
+
+            $module->users()->attach(Auth::user()->id);
 
             return response()->json(['module' => $module, 'message' => 'Module created successfully.'], 201);
         } catch (ValidationException $e) {

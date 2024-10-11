@@ -39,13 +39,13 @@ class Notification extends Model
 
 
     // Relationship with User
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class,'user_on_notification');
     }
 
     // Relationship with Module
-    public function module()
+    public function module(): BelongsTo
     {
         return $this->belongsTo(Module::class);
     }

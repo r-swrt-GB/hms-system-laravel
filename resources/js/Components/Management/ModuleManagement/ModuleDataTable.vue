@@ -2,6 +2,7 @@
     <DataTableExplorerBaseline
         :search-enabled="true"
         @search="onSearch"
+        @add="addModule"
     >
         <template v-slot:toolbar-title>Modules</template>
         <template v-slot:add-library-item-action>Add Module</template>
@@ -43,6 +44,7 @@ import DataTableExplorerBaseline from '../../BaselineDataTable.vue';
 
 export default {
     name: 'ModuleDataTable',
+    emits: ['viewModuleClicked', 'editModuleClicked', 'deleteModuleClicked', 'addModuleClicked'],
     components: {
         DataTableExplorerBaseline
     },
@@ -75,16 +77,16 @@ export default {
             this.searchQuery = value;
         },
         viewModule(module) {
-            // Implement edit functionality
-            console.log('Edit module:', module);
+            this.$emit('viewModuleClicked', module);
         },
         editModule(module) {
-            // Implement edit functionality
-            console.log('Edit module:', module);
+            this.$emit('editModuleClicked', module);
         },
         deleteModule(module) {
-            // Implement delete functionality
-            console.log('Delete module:', module);
+            this.$emit('deleteModuleClicked', module);
+        },
+        addModule() {
+            this.$emit('addModuleClicked');
         }
     }
 };
