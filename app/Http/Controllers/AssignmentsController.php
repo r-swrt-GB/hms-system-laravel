@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Assignment;
 use App\Models\Group;
 use App\Models\Module;
+use App\Models\Notification;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,9 +14,11 @@ use Inertia\Inertia;
 
 class AssignmentsController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, Module $module)
     {
-        return Inertia::render('Assignments/AssignmentsPage');
+        $module->load('assignments');
+
+        return Inertia::render('Assignments/AssignmentsPage', ['module' => $module]);
     }
 
     public function getModuleAssignments(Request $request, Module $module)
@@ -67,11 +70,6 @@ class AssignmentsController extends Controller
         return Inertia::render('Assignments/AssignmentPage', ['assignment' => $assignment]);
     }
 
-    public function getCreateAssignmentPage(Request $request)
-    {
-        return Inertia::render('Assignments/CreateAssignmentsPage');
-    }
-
     /**
      * Store a newly created assignment.
      */
@@ -89,7 +87,6 @@ class AssignmentsController extends Controller
                 'max_grade' => 'integer|required',
                 'open_date' => 'date|required',
                 'due_date' => 'date|required',
-                'group_ids' => 'array',
             ]);
 
             // Create the assignment
@@ -98,7 +95,6 @@ class AssignmentsController extends Controller
             $assignment = Assignment::create($validatedData);
 
             if ($assignment->isIndividual()) {
-                // Attach all users of the module to the assignment
                 $users = $module->users;
                 $assignment->users()->attach($users->pluck('id')->toArray());
             } else if ($assignment->isGroup() && $request->has('group_ids')) {
@@ -109,6 +105,12 @@ class AssignmentsController extends Controller
                 $assignment->users()->attach($userIds);
             }
 
+            $notification = $this->createNotification($assignment);
+
+            foreach ($assignment->users as $user) {
+                $user->notifications()->attach($notification->id);
+            }
+
             return response()->json(['assignment' => $assignment, 'message' => 'Assignment created successfully.']);
         } catch (ValidationException $e) {
             return response()->json([
@@ -117,10 +119,30 @@ class AssignmentsController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'An unexpected error occurred',
+                'error' => 'An unexpected error occurred:' . $e->getMessage(),
                 'message' => 'Please try again later or contact support if the problem persists',
             ], 500);
         }
+    }
+
+    private function createNotification(Assignment $assignment)
+    {
+        return Notification::create([
+            'user_id' => Auth::user()->id,
+            'module_id' => $assignment->module()->first()->id,
+            'title' => 'New assignment has been created',
+            'message' => 'A new assignment named ' . $assignment->title . ' has been created. It will open on ' . $assignment->open_date . ' and is due on ' . $assignment->due_date . '. Best of luck!',
+        ]);
+    }
+
+    private function createUpdateNotification(Assignment $assignment)
+    {
+        return Notification::create([
+            'user_id' => Auth::user()->id,
+            'module_id' => $assignment->module()->first()->id,
+            'title' => 'Assignment has been updated',
+            'message' => $assignment->title . ' has been updated. Please navigate to the assignment to view the updates.',
+        ]);
     }
 
 
@@ -157,6 +179,12 @@ class AssignmentsController extends Controller
                 $groups = Group::whereIn('id', $groupIds)->with('users')->get();
                 $userIds = $groups->pluck('users.*.id')->flatten()->unique()->toArray();
                 $assignment->users()->sync($userIds);
+            }
+
+            $notification = $this->createUpdateNotification($assignment);
+
+            foreach ($assignment->users as $user) {
+                $user->notifications()->attach($notification->id);
             }
 
             return response()->json(['assignment' => $assignment, 'message' => 'Assignment updated successfully.']);

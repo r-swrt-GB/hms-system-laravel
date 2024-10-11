@@ -90,7 +90,7 @@ class ApiRoutesV1
                         Route::middleware('student')->group(function () {
                             Route::middleware('lecturer')->group(function () {
                                 //Create
-                                Route::post('/assignments/create', [AssignmentsController::class, 'create'])->name('api.assignments.create');
+                                Route::post('/assignments/', [AssignmentsController::class, 'create'])->name('api.assignments.create');
                                 //Update
                                 Route::patch('/assignments/{assignment}', [AssignmentsController::class, 'update'])->name('api.assignments.update');
                                 //Delete
