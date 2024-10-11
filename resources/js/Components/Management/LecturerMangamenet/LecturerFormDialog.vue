@@ -94,11 +94,11 @@ export default {
         },
         lecturer: {
             required: false,
-            default: {
+            default: () => ({
                 name: '',
                 surname: '',
                 email: '',
-            }
+            })
         }
     },
     data() {
@@ -130,22 +130,24 @@ export default {
         }
     },
     methods: {
+        resetForm() {
+            this.lecturer = {
+                name: '',
+                surname: '',
+                email: ''
+            };
+            this.formValid = false;
+        },
         save() {
             if (this.$refs.lecturerForm.validate()) {
-                this.$emit('saveLecturer', this.lecturer);
-                this.internalDialog = false;  // Close dialog after saving
-
-                this.lecturer = {
-                    name: '',
-                    surname: '',
-                    email: '',
-                };
+                this.$emit('saveLecturer', {...this.lecturer});
+                this.resetForm();
+                this.$emit('update:value', false);
             }
         },
         cancel() {
-            this.formValid = false;
-            this.internalDialog = false;
-            this.$emit('cancel');
+            this.$emit('update:value', false);
+            this.resetForm();
         }
     }
 }
