@@ -3,6 +3,7 @@
 namespace App\Routes\RoutesV1;
 
 use App\Http\Controllers\AssignmentsController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ModuleManagementController;
@@ -141,6 +142,10 @@ class ApiRoutesV1
                 Route::get('/profile', [ProfileController::class, 'getUserProfile'])->name('profile.get');
                 Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
                 Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+                Route::post('/create/user', [RegisteredUserController::class, 'createPendingUser'])->name('api.users.pending.create');
+                Route::patch('/edit/user/{user}', [RegisteredUserController::class, 'editUser'])->name('api.users.update');
+                Route::delete('/delete/user/{user}', [RegisteredUserController::class, 'deleteUser'])->name('api.users.delete');
             });
         });
     }

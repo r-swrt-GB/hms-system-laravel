@@ -38,10 +38,6 @@ class AuthRoutesV1
         });
 
         Route::middleware('auth')->group(function () {
-            Route::post('/create/user', [RegisteredUserController::class, 'createPendingUser'])->name('api.users.pending.create');
-            Route::patch('/edit/user/{user}', [RegisteredUserController::class, 'editUser'])->name('api.users.update');
-            Route::delete('/delete/user/{user}', [RegisteredUserController::class, 'deleteUser'])->name('api.users.delete');
-
         Route::get('verify-email', EmailVerificationPromptController::class)
             ->name('verification.notice');
 
