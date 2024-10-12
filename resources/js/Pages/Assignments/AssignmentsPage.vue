@@ -45,6 +45,11 @@
                     @dialog-closed="closeDeleteDialog"
                     @delete-assignment-clicked="deleteAssignment"
                 ></assignments-delete-dialog>
+
+                <!-- Snacbar Dialog -->
+                <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
+                    {{ snackbar.message }}
+                </v-snackbar>
             </v-col>
         </v-row>
     </v-container>
@@ -107,6 +112,12 @@ export default {
                 due_date: null,
             },
             assignmentFormDialog: false,
+            snackbar: {
+                show: false,
+                message: '',
+                color: 'success',
+                timeout: 3000
+            },
         };
     },
     computed: {
@@ -136,13 +147,13 @@ export default {
                     due_date: assignment.due_date,
                 });
 
-                console.log(response.data.message);
+                this.snackbar.message = "Assignment created successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
             } catch (error) {
-                if (error.response && error.response.data) {
-                    console.error(error.response.data.errors);
-                } else {
-                    console.error(error);
-                }
+                this.snackbar.message = error.response?.data?.errors || "Failed to create Assignment";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
             } finally {
                 this.closeDialog();
             }
@@ -161,13 +172,13 @@ export default {
                     due_date: assignment.due_date,
                 });
 
-                console.log(response.data.message);
+                this.snackbar.message = "Assignment updated successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
             } catch (error) {
-                if (error.response && error.response.data) {
-                    console.error(error.response.data.errors);
-                } else {
-                    console.error(error);
-                }
+                this.snackbar.message = error.response?.data?.errors || "Failed to update Assignment";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
             } finally {
                 this.closeDialog();
             }
@@ -176,13 +187,13 @@ export default {
             try {
                 const response = await axios.delete(`/api/v1/modules/${this.module.id}/assignments/${assignment.id}`);
 
-                console.log(response.data.message);
+                this.snackbar.message = "Assignment deleted successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
             } catch (error) {
-                if (error.response && error.response.data) {
-                    console.error(error.response.data.errors);
-                } else {
-                    console.error(error);
-                }
+                this.snackbar.message = error.response?.data?.errors || "Failed to delete Assignment";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
             } finally {
                 this.closeDeleteDialog();
             }

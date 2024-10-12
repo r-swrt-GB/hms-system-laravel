@@ -3,72 +3,97 @@
         v-model="internalDialog"
         :max-width="maxWidth"
         persistent>
-    <v-responsive
-        class="mx-auto"
+        <v-responsive
+            class="mx-auto"
         />
-    <v-card>
-        <v-card-title>
-            <v-icon class="mr-1">
-                <slot name="toolbar-icon">mdi-account</slot>
-            </v-icon>
-            <slot name="toolbar-title">Add Lecturer</slot>
-        </v-card-title>
+        <v-card>
+            <v-card-title>
+                <v-icon class="mr-1">
+                    <slot name="toolbar-icon">mdi-account</slot>
+                </v-icon>
+                <slot name="toolbar-title">Add Lecturer</slot>
+            </v-card-title>
 
-        <v-divider></v-divider>
+            <v-divider></v-divider>
 
-        <v-card-text>
-            <v-form ref="lecturerForm" v-model="formValid">
-                <v-text-field
-                    v-model="lecturer.name"
-                    label="Name"
-                    variant="solo"
-                    :rules="nameRules"
-                    required
-                    clearable></v-text-field>
+            <v-card-text>
+                <v-form ref="lecturerForm" v-model="formValid">
+                    <v-row>
+                        <v-col cols="6">
+                            <!-- Name -->
+                            <div class="text-field-label">
+                                Name
+                            </div>
+                            <v-text-field
+                                v-model="lecturer.name"
+                                :rules="nameRules"
+                                required
+                                placeholder="John"
+                                variant="solo"
+                                density="compact"
+                            ></v-text-field>
+                        </v-col>
 
-                <v-text-field
-                    v-model="lecturer.surname"
-                    label="Surname"
-                    variant="solo"
-                    :rules="surnameRules"
-                    required
-                    clearable></v-text-field>
+                        <v-col cols="6">
+                            <!-- Surnmae -->
+                            <div class="text-field-label">
+                                Surname
+                            </div>
+                            <v-text-field
+                                v-model="lecturer.surname"
+                                :rules="surnameRules"
+                                required
+                                placeholder="Doe"
+                                variant="solo"
+                                density="compact"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
 
-                <v-text-field
-                    v-model="lecturer.email"
-                    label="Email"
-                    placeholder="johndoe@gmail.com"
-                    variant="solo"
-                    :rules="emailRules"
-                    required
-                    clearable></v-text-field>
-            </v-form>
-            <small class="text-caption text-medium-emphasis">
-                <slot name="small-text">Please complete all fields</slot>
-            </small>
-        </v-card-text>
+                    <v-row>
+                        <v-col cols="12">
+                            <!-- Name -->
+                            <div class="text-field-label">
+                                Name
+                            </div>
+                            <v-text-field
+                                v-model="lecturer.email"
+                                :rules="emailRules"
+                                required
+                                placeholder="johndoe@gmail.com"
+                                variant="solo"
+                                density="compact"
+                                type="email"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                </v-form>
+                <small class="text-caption text-medium-emphasis">
+                    <slot name="small-text">Please complete all fields</slot>
+                </small>
+            </v-card-text>
 
-        <v-card-actions>
-            <v-spacer></v-spacer>
+            <v-card-actions>
+                <v-spacer></v-spacer>
 
-            <!-- Cancel Button -->
-            <v-btn
-                variant="plain"
-                @click="cancel">
-                Cancel
-            </v-btn>
+                <!-- Cancel Button -->
+                <v-btn
+                    variant="plain"
+                    @click="cancel">
+                    Cancel
+                </v-btn>
 
-            <!-- Save Button -->
-            <v-btn
-                color="primary"
-                :loading="loading"
-                :disabled="!formValid"
-                variant="elevated"
-                @click="save">
-                Save
-            </v-btn>
-        </v-card-actions>
-    </v-card>
+                <!-- Save Button -->
+                <v-btn
+                    color="primary"
+                    :loading="loading"
+                    :disabled="!formValid"
+                    variant="elevated"
+                    @click="save">
+                    Save
+                </v-btn>
+            </v-card-actions>
+        </v-card>
     </v-dialog>
 </template>
 

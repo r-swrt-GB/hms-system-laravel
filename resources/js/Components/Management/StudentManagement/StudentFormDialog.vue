@@ -24,6 +24,7 @@
                             v-model="student.first_name"
                             :readonly="loading"
                             :rules="[rules.required]"
+                            placeholder="John"
                             variant="solo"
                             density="compact"
                         ></v-text-field>
@@ -38,6 +39,7 @@
                             v-model="student.last_name"
                             :readonly="loading"
                             :rules="[rules.required]"
+                            placeholder="Doe"
                             variant="solo"
                             density="compact"
                         ></v-text-field>
@@ -53,21 +55,7 @@
                             v-model="student.email"
                             :readonly="loading"
                             :rules="[rules.required, rules.email]"
-                            variant="solo"
-                            density="compact"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="12">
-                        <!-- Student Number -->
-                        <div class="text-field-label">
-                            Student Number
-                        </div>
-                        <v-text-field
-                            v-model="student.studentNumber"
-                            :readonly="loading"
-                            :rules="[rules.required]"
+                            placeholder="jhonniedoe@gmail.com"
                             variant="solo"
                             density="compact"
                         ></v-text-field>
@@ -89,8 +77,8 @@
 
 <script>
 import { useForm } from "@inertiajs/vue3";
-import BaselineDialog from "@/Components/BaselineDialog.vue";
-import DialogBaseline from "@/Components/BaselineDialog.vue";
+import BaselineDialog from "@/Components/BaselineComponents/BaselineDialog.vue";
+import DialogBaseline from "@/Components/BaselineComponents/BaselineDialog.vue";
 export default {
     name: "StudentFormDialog",
     components: {DialogBaseline, BaselineDialog },

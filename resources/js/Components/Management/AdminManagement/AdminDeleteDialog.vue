@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import DialogBaseline from "@/Components/BaselineDialog.vue";
+import DialogBaseline from "@/Components/BaselineComponents/BaselineDialog.vue";
 
 
 export default {

@@ -56,7 +56,7 @@ export default {
             localLecturers: {...this.lecturerUsers},
             showDialog: false,
             showDeleteDialog: false,
-            selectUser: { id: null, name: '', surname: '', email: '' },
+            selectUser: {id: null, name: '', surname: '', email: ''},
             editing: false,
             lecturerToDelete: null,
             snackbar: {
@@ -74,7 +74,7 @@ export default {
     },
     methods: {
         addUser() {
-            this.selectUser = { name: '', surname: '', email: '' };
+            this.selectUser = {name: '', surname: '', email: ''};
             this.editing = false;
             this.showDialog = true;
         },
@@ -112,11 +112,11 @@ export default {
                     email: lecturer.email,
                     role: 'lecturer'
                 });
-                this.snackbar.message = "Lecturer successfully added!";
+                this.snackbar.message = "Lecturer added successfully";
                 this.snackbar.color = "success";
                 this.snackbar.show = true;
             } catch (error) {
-                this.snackbar.message = error.response?.data?.errors || "An error occurred";
+                this.snackbar.message = error.response?.data?.errors || "Failed to add Lecturer";
                 this.snackbar.color = "error";
                 this.snackbar.show = true;
             } finally {
@@ -130,11 +130,11 @@ export default {
                     last_name: lecturer.surname,
                     email: lecturer.email
                 });
-                this.snackbar.message = "Lecturer successfully updated!";
+                this.snackbar.message = "Lecturer updated successfully";
                 this.snackbar.color = "success";
                 this.snackbar.show = true;
             } catch (error) {
-                this.snackbar.message = error.response?.data?.errors || "An error occurred";
+                this.snackbar.message = error.response?.data?.errors || "Failed to update Lecturer";
                 this.snackbar.color = "error";
                 this.snackbar.show = true;
             } finally {
@@ -142,15 +142,15 @@ export default {
             }
         },
         async confirmDelete() {
-            try{
+            try {
                 const lecturer = this.selectUser;
                 await axios.delete(`/api/v1/delete/user/${lecturer.id}`);
 
-                this.snackbar.message = "Lecturer successfully deleted!";
+                this.snackbar.message = "Lecturer deleted successfully";
                 this.snackbar.color = "success";
                 this.snackbar.show = true;
             } catch (error) {
-                this.snackbar.message = error.response?.data?.errors || "An error occurred";
+                this.snackbar.message = error.response?.data?.errors || "Failed to delete Lecturer";
                 this.snackbar.color = "error";
                 this.snackbar.show = true;
             } finally {
@@ -160,10 +160,6 @@ export default {
         cancelDelete() {
             this.showDeleteDialog = false;
         },
-        /*cancelDialog() {
-            this.showDialog = false;
-            this.selectUser = { name: '', surname: '', email: '' };
-        }*/
     }
 };
 </script>

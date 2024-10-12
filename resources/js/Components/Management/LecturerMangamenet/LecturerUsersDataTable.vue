@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import DataTableExplorerBaseline from '../../BaselineDataTable.vue';
+import DataTableExplorerBaseline from '../../BaselineComponents/BaselineDataTable.vue';
 
 export default {
     name: 'LecturerUsersDataTable',

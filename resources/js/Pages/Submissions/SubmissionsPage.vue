@@ -22,7 +22,7 @@
                     :submissions="submissions"
                     @delete-submission="showDeleteDialog"
                     @view-assignment-details="showAssignmentInformationDialog"
-                    @view-submission=""
+                    @view-submission="viewSubmission"
                 ></submission-data-table>
 
                 <assignment-form-dialog
@@ -41,6 +41,11 @@
                     @dialog-closed="closeDeleteDialog"
                     @delete-submission-clicked="deleteSubmission"
                 ></submission-delete-dialog>
+
+                <!-- Snackbar Dialog -->
+                <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
+                    {{ snackbar.message }}
+                </v-snackbar>
             </v-col>
         </v-row>
     </v-container>
@@ -53,12 +58,14 @@ import SubmissionDataTable from "@/Components/Submissions/SubmissionDataTable.vu
 import AssignmentFormDialog from "@/Components/Assignments/AssignmentFormDialog.vue";
 import DeleteModuleDialog from "@/Components/Management/ModuleManagement/DeleteModuleDialog.vue";
 import SubmissionDeleteDialog from "@/Components/Submissions/SubmissionDeleteDialog.vue";
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     name: 'SubmissionsPage',
     components: {
         SubmissionDeleteDialog,
-        DeleteModuleDialog, AssignmentFormDialog, SubmissionDataTable, AssignmentsDataTable},
+        DeleteModuleDialog, AssignmentFormDialog, SubmissionDataTable, AssignmentsDataTable
+    },
     props: {
         module: {
             required: true
@@ -75,6 +82,12 @@ export default {
             assignmentDialog: false,
             deleteSubmissionDialog: false,
             selectedSubmission: false,
+            snackbar: {
+                show: false,
+                message: '',
+                color: 'success',
+                timeout: 3000
+            },
         };
     },
     methods: {
@@ -88,26 +101,30 @@ export default {
             try {
                 const response = await axios.delete(`/api/v1/modules/${this.module.id}/assignments/${this.assignment.id}/submissions/${submission.id}`);
 
-                console.log(response.data.message);
+                this.snackbar.message = "Submission deleted successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
             } catch (error) {
-                console.error(error);
-                if (error.response && error.response.data) {
-                    console.error(error.response.data.errors);
-                } else {
-                    console.error(error);
-                }
+                this.snackbar.message = error.response?.data?.errors || "Failed to delete Submission";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
             } finally {
                 this.closeDeleteDialog();
             }
         },
-        showDeleteDialog(submission)
-        {
+        showDeleteDialog(submission) {
             this.selectedSubmission = submission;
             this.deleteSubmissionDialog = true;
         },
-        closeDeleteDialog()
-        {
-          this.deleteSubmissionDialog = false;
+        viewSubmission(submission) {
+            Inertia.visit(route('pages.submission', {
+                module: this.module,
+                assignment: this.assignment,
+                submission: submission
+            }));
+        },
+        closeDeleteDialog() {
+            this.deleteSubmissionDialog = false;
         },
         goBack() {
             window.history.back();

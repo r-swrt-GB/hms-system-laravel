@@ -43,13 +43,12 @@ class PageRoutes
 
                 //Assignments routes
                 Route::get('/assignments', [AssignmentsController::class, 'index'])->name('pages.assignments');
-                Route::get('/assignments/{assignment}', [AssignmentsController::class, 'getViewAssignmentPage'])->name('pages.assignment');
                 Route::get('/assignments/create', [AssignmentsController::class, 'getCreateAssignmentPage'])->name('pages.create-assignments');
 
                 Route::prefix('/assignments/{assignment}')->group(function () {
                     //Submissions routes
                     Route::get('/submissions', [SubmissionsController::class, 'index'])->name('pages.submissions');
-                    Route::get('/submissions/{submission}', [AssignmentsController::class, 'getSubmissionPage'])->name('pages.submission');
+                    Route::get('/submissions/{submission}', [SubmissionsController::class, 'getSubmissionPage'])->name('pages.submission');
                 });
 
             });

@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Monolog\Handler\SyslogUdpHandler;
 use PhpParser\Node\Expr\AssignOp\Mod;
 
 class SubmissionsController extends Controller
@@ -27,19 +28,21 @@ class SubmissionsController extends Controller
         ]);
     }
 
-    public function getSubmissionPage(Request $request, Submission $submission)
+    public function getSubmissionPage(Request $request, Module $module, Assignment $assignment, Submission $submission)
     {
         try {
-            $submission = $this->getFullSubmission($submission);
+            $submission = $submission->load(['users', 'comments', 'files']);
             return Inertia::render('Submissions/SubmissionPage', [
-                'submission' => $submission
+                'module' => $module,
+                'assignment' => $assignment,
+                'submission' => $submission,
             ]);
         } catch (\Exception $e) {
             return Inertia::render('Error', ['message' => 'An error occurred while fetching the submission.']);
         }
     }
 
-    public function read(Request $request, Submission $submission)
+    public function read(Request $request, Module $module, Assignment $assignment, Submission $submission)
     {
         try {
             $submission = $this->getFullSubmission($submission);
@@ -163,6 +166,6 @@ class SubmissionsController extends Controller
 
     private function getFullSubmission(Submission $submission)
     {
-        return $submission->load(['user', 'comments', 'assignments', 'files']);
+        return $submission->load(['users', 'comments', 'assignments', 'files']);
     }
 }

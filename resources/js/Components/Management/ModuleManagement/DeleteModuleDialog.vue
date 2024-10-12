@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import DataTableExplorerBaseline from '../../BaselineDataTable.vue';
-import DialogBaseline from "@/Components/BaselineDialog.vue";
+import DataTableExplorerBaseline from '../../BaselineComponents/BaselineDataTable.vue';
+import DialogBaseline from "@/Components/BaselineComponents/BaselineDialog.vue";
 
 export default {
     name: 'DeleteModuleDialog',

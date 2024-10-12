@@ -25,6 +25,10 @@
             @dialogClosed="closeDeleteDialog"
         ></DeleteStudentDialog>
 
+        <!-- Snacbar Dialog -->
+        <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
+            {{ snackbar.message }}
+        </v-snackbar>
 
     </AppClean>
 </template>
@@ -35,6 +39,7 @@ import AppClean from "@/Layouts/AppClean.vue";
 import StudentUsersDataTable from "@/Components/Management/StudentManagement/StudentUsersDataTable.vue";
 import StudentFormDialog from "@/Components/Management/StudentManagement/StudentFormDialog.vue";
 import DeleteStudentDialog from "@/Components/Management/StudentManagement/DeleteStudentDialog.vue";
+
 export default {
     name: 'StudentManagementPage',
     components: {
@@ -62,6 +67,12 @@ export default {
             showDeleteDialog: false,
             showEditDialog: false,
             loading: false,
+            snackbar: {
+                show: false,
+                message: '',
+                color: 'success',
+                timeout: 3000
+            },
             selectedStudent: {
                 first_name: '',
                 last_name: '',
@@ -95,14 +106,14 @@ export default {
                     email: student.email,
                     role: 'student',
                 });
-                console.log(response.data.message);
 
+                this.snackbar.message = "Student updated successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
             } catch (error) {
-                if(error.response && error.response.data) {
-                    console.error(error.response.data.errors);
-                } else {
-                    console.error(error);
-                }
+                this.snackbar.message = error.response?.data?.errors || "Failed to update Student";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
             } finally {
                 this.closeStudentDialog();
             }
@@ -121,13 +132,13 @@ export default {
 
                 this.studentUsers.push(newStudent);
 
-                console.log(response.data.message);
+                this.snackbar.message = "Student added successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
             } catch (error) {
-                if (error.response && error.response.data) {
-                    console.error(error.response.data.errors);
-                } else {
-                    console.error(error);
-                }
+                this.snackbar.message = error.response?.data?.errors || "Failed to add Student";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
             } finally {
                 this.loading = false;
                 this.closeStudentDialog();
@@ -141,13 +152,13 @@ export default {
 
                 this.studentUsers = this.studentUsers.filter(u => u.id !== student.id);
 
-                console.log(response.data.message);
+                this.snackbar.message = "Student deleted successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
             } catch (error) {
-                if (error.response && error.response.data) {
-                    console.error(error.response.data.errors);
-                } else {
-                    console.error(error);
-                }
+                this.snackbar.message = error.response?.data?.errors || "Failed to delete Student";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
             } finally {
                 this.loading = false;
                 this.closeDeleteDialog();

@@ -14,32 +14,54 @@
 
         <template #dialog-content>
             <v-form ref="form" v-model="valid" lazy-validation>
-                <!-- Name Input -->
-                <v-text-field
-                    clearable variant="solo"
-                    v-model="formData.name"
-                    label="First Name"
-                    :rules="nameRules"
-                    required
-                ></v-text-field>
+                <v-row>
+                    <v-col cols="6">
+                        <!-- First Name -->
+                        <div class="text-field-label">
+                            Name
+                        </div>
+                        <v-text-field
+                            v-model="formData.name"
+                            :rules="nameRules"
+                            required
+                            placeholder="John"
+                            variant="solo"
+                            density="compact"
+                        ></v-text-field>
+                    </v-col>
 
-                <!-- Surname Input -->
-                <v-text-field
-                    clearable variant="solo"
-                    v-model="formData.surname"
-                    label="Last Name"
-                    :rules="surnameRules"
-                    required
-                ></v-text-field>
+                    <v-col cols="6">
+                        <!-- Last Name -->
+                        <div class="text-field-label">
+                            Surname
+                        </div>
+                        <v-text-field
+                            v-model="formData.surname"
+                            :rules="surnameRules"
+                            required
+                            placeholder="Doe"
+                            variant="solo"
+                            density="compact"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
 
-                <!-- Email Input -->
-                <v-text-field
-                    clearable variant="solo"
-                    v-model="formData.email"
-                    label="Email"
-                    :rules="emailRules"
-                    required
-                ></v-text-field>
+                <v-row>
+                    <v-col cols="12">
+                        <!-- Email -->
+                        <div class="text-field-label">
+                            Email
+                        </div>
+                        <v-text-field
+                            v-model="formData.email"
+                            :rules="emailRules"
+                            required
+                            placeholder="johndoe@gmail.com"
+                            variant="solo"
+                            density="compact"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
             </v-form>
         </template>
 
@@ -58,7 +80,7 @@
 </template>
 
 <script>
-import DialogBaseline from "@/Components/BaselineDialog.vue";
+import DialogBaseline from "@/Components/BaselineComponents/BaselineDialog.vue";
 
 export default {
     name: 'UserFormDialog',

@@ -21,6 +21,11 @@
             @dialog-closed="closeDeleteDialog"
             @delete-module-clicked="deleteModule"
         ></delete-module-dialog>
+
+        <!-- Snacbar Dialog -->
+        <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
+            {{ snackbar.message }}
+        </v-snackbar>
     </AppClean>
 </template>
 
@@ -61,6 +66,12 @@ export default {
                 code: '',
                 description: '',
             },
+            snackbar: {
+                show: false,
+                message: '',
+                color: 'success',
+                timeout: 3000
+            },
             isUpdate: false,
         };
     },
@@ -95,13 +106,13 @@ export default {
                     description: module.description,
                 });
 
-                console.log(response.data.message);
+                this.snackbar.message = "Module updated successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
             } catch (error) {
-                if (error.response && error.response.data) {
-                    console.error(error.response.data.errors);
-                } else {
-                    console.error(error);
-                }
+                this.snackbar.message = error.response?.data?.errors || "Failed to add Module";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
             } finally {
                 this.closeDialog();
             }
@@ -114,13 +125,13 @@ export default {
                     description: module.description,
                 });
 
-                console.log(response.data.message);
+                this.snackbar.message = "Module created successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
             } catch (error) {
-                if (error.response && error.response.data) {
-                    console.error(error.response.data.errors);
-                } else {
-                    console.error(error);
-                }
+                this.snackbar.message = error.response?.data?.errors || "Failed to create Module";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
             } finally {
                 this.closeDialog();
             }
@@ -129,19 +140,19 @@ export default {
             try {
                 const response = await axios.delete(`/api/v1/modules/${module.id}`);
 
-                console.log(response.data.message);
+                this.snackbar.message = "Module deleted successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
             } catch (error) {
-                if (error.response && error.response.data) {
-                    console.error(error.response.data.errors);
-                } else {
-                    console.error(error);
-                }
+                this.snackbar.message = error.response?.data?.errors || "Failed to delete Module";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
             } finally {
                 this.closeDeleteDialog();
             }
         },
         async viewModule(module) {
-            Inertia.visit(route('pages.assignments', { module: module }));
+            Inertia.visit(route('pages.assignments', {module: module}));
         },
         clearSelectedModule() {
             this.selectedModule = {

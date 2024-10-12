@@ -23,24 +23,24 @@
                             v-model="module.module_name"
                             :readonly="loading"
                             :rules="[rules.required]"
+                            placeholder="IT Developments"
+                            variant="solo"
                             density="compact"
                             autofocus
-                            variant="solo"
-                            clearable
                         ></v-text-field>
                     </v-col>
 
                     <v-col cols="6">
-                        <!-- Code -->
+                        <!-- Module Code -->
                         <div class="text-field-label">
                             Module Code
                         </div>
                         <v-text-field
                             v-model="module.code"
                             :rules="[rules.required]"
-                            density="compact"
+                            placeholder="CMPG323"
                             variant="solo"
-                            clearable
+                            density="compact"
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -53,6 +53,7 @@
                         <v-textarea
                             v-model="module.description"
                             :rules="[rules.required]"
+                            placeholder="Giving you the edge you need to make your way in this marvellous world!"
                             density="compact"
                             variant="solo"
                         ></v-textarea>
@@ -73,8 +74,8 @@
 </template>
 
 <script>
-import DataTableExplorerBaseline from '../../BaselineDataTable.vue';
-import DialogBaseline from "@/Components/BaselineDialog.vue";
+import DataTableExplorerBaseline from '../../BaselineComponents/BaselineDataTable.vue';
+import DialogBaseline from "@/Components/BaselineComponents/BaselineDialog.vue";
 
 export default {
     name: 'ModuleFormDialog',

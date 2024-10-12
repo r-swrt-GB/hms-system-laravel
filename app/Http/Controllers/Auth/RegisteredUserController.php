@@ -32,14 +32,14 @@ class RegisteredUserController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'email' => 'required|string|email|max:255|unique:' . User::class,
             'role' => 'required|string|max:255',
         ]);
 
         $user = User::create([
             'first_name' => $request->get('first_name'),
             'last_name' => $request->get('last_name'),
-            'email' => $request->get('email'),
+            'email' => strtolower($request->get('email')),
             'password' => bcrypt(Str::random(20)),
         ]);
 
@@ -77,7 +77,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255',
+            'email' => 'required|string|email|max:255',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -89,7 +89,7 @@ class RegisteredUserController extends Controller
 
             $user->first_name = $request['first_name'];
             $user->last_name = $request['last_name'];
-            $user->email = $request['email'];
+            $user->email = strtolower($request['email']);
             $user->password = Hash::make($request['password']);
             $user->save();
 
@@ -127,13 +127,13 @@ class RegisteredUserController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255',
+            'email' => 'required|string|email|max:255',
         ]);
 
 
         $user->first_name = $request['first_name'];
         $user->last_name = $request['last_name'];
-        $user->email = $request['email'];
+        $user->email = strtolower($request['email']);
         $user->save();
 
         return response()->json([

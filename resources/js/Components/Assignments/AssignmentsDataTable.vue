@@ -44,7 +44,7 @@
 
 <script>
 
-import DataTableExplorerBaseline from "@/Components/BaselineDataTable.vue";
+import DataTableExplorerBaseline from "@/Components/BaselineComponents/BaselineDataTable.vue";
 
 export default {
     name: 'AssignmentsDataTable',

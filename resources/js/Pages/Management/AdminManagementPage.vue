@@ -130,22 +130,21 @@ export default {
                     .then((response) => {
                         console.log('User deleted successfully:', response.data);
                         this.closeDeleteDialog();
-                        this.snackbar.message = "Admin successfully deleted!";
+                        this.snackbar.message = "Admin deleted successfully";
                         this.snackbar.color = "success";
                         this.snackbar.show = true;
                         window.location.reload();
                     })
                     .catch((error) => {
                         console.error('Error deleting user:', error);
-                        this.snackbar.message = "Admin could not be deleted!";
+                        this.snackbar.message = "Failed to delete Admin";
                         this.snackbar.color = "error";
                         this.snackbar.show = true;
                     });
             }
         },
 
-        async editSaveUser(user)
-        {
+        async editSaveUser(user) {
             try {
                 const response = await axios.patch(`/api/v1/edit/user/${user.id}`, {
                     id: user.id,
@@ -153,12 +152,12 @@ export default {
                     last_name: user.surname,
                     email: user.email,
                 });
-                this.snackbar.message = "Admin successfully updated!";
+                this.snackbar.message = "Admin updated successfully";
                 this.snackbar.color = "success";
                 this.snackbar.show = true;
                 window.location.reload();
             } catch (error) {
-                this.snackbar.message = "Admin could not be updated!";
+                this.snackbar.message = "Failed to update Admin";
                 console.log(error)
                 this.snackbar.color = "error";
                 this.snackbar.show = true;
@@ -169,25 +168,25 @@ export default {
 
         async saveUser(user) {
 
-                console.log("from user page: ",user)
-                try {
-                    const response = await axios.post('/api/v1/create/user', {
-                        first_name: user.name,
-                        last_name: user.surname,
-                        email: user.email,
-                        role: 'admin'
-                    });
-                    this.snackbar.message = "Admin successfully added!";
-                    this.snackbar.color = "success";
-                    this.snackbar.show = true;
-                    window.location.reload();
-                } catch (error) {
-                    this.snackbar.message = "Admin could not be added!";
-                    this.snackbar.color = "error";
-                    this.snackbar.show = true;
-                } finally {
-                    this.closeDialog();
-                }
+            console.log("from user page: ", user)
+            try {
+                const response = await axios.post('/api/v1/create/user', {
+                    first_name: user.name,
+                    last_name: user.surname,
+                    email: user.email,
+                    role: 'admin'
+                });
+                this.snackbar.message = "Admin added successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
+                window.location.reload();
+            } catch (error) {
+                this.snackbar.message = "Failed to add Admin";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
+            } finally {
+                this.closeDialog();
+            }
 
         },
 
@@ -201,7 +200,7 @@ export default {
 
         // Reset the form data
         resetForm() {
-            this.formData = { name: '', surname: '', email: '' };
+            this.formData = {name: '', surname: '', email: ''};
         },
     },
 };

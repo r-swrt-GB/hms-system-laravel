@@ -7,3 +7,15 @@
     font-size: 16px;
     margin-bottom: 4px;
 }
+
+.divider {
+    background-color: grey;
+    height: 1px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.data-display {
+    font-size: 16px;
+}
