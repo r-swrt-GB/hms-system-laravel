@@ -21,14 +21,20 @@ class ModuleAccessMiddleware
     {
         $user = Auth::user();
 
-        $moduleId = $request->route('module')->id;
+        $module = $request->route('module');
+
+        if (is_string($module)) {
+            $module = Module::find($module);
+        } else {
+            $module = Module::find($module->id);
+        }
 
         // Allow admin access
         if ($user && $user->hasRole('admin')) {
             return $next($request);
         }
 
-        $module = Module::find($moduleId);
+
         if (!$module) {
             return response()->json([
                 'error' => 'Not Found',
