@@ -74,13 +74,8 @@ class SubmissionsController extends Controller
     public function create(Request $request, Module $module, Assignment $assignment)
     {
         try {
-            $validatedData = $request->validate([
-                'submission_date' => 'required',
-                'files' => 'required',
-            ]);
-
             $submission = new Submission();
-            $submission->submission_date = Carbon::parse($validatedData['submission_date']);
+            $submission->submission_date = Carbon::parse($request->get('submission_date'));
             $submission->assignment_id = $assignment->id;
             $submission->save();
 
