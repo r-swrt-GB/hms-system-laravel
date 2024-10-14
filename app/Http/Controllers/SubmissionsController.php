@@ -75,8 +75,8 @@ class SubmissionsController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'submission_date' => 'required|date',
-                'files' => 'required|array',
+                'submission_date' => 'required',
+                'files' => 'required',
             ]);
 
             $submission = new Submission();
