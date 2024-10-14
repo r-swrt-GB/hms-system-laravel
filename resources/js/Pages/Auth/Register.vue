@@ -1,127 +1,165 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import {Head} from '@inertiajs/vue3';
+import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import axios from 'axios';
+import {ref} from 'vue';
+import {Inertia} from "@inertiajs/inertia";
 
-const form = useForm({
+const form = ref({
     first_name: '',
     last_name: '',
     email: '',
     password: '',
-    password_confirmation: '',
-    avatar: null,
 });
 
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
+const errors = ref({});
+
+// Snackbar state
+const snackbar = ref({
+    show: false,
+    message: '',
+    color: '',
+    timeout: 4000
+});
+
+const submit = async () => {
+    try {
+        const response = await axios.post(route('pages.management-modules'), form.value);
+        form.value.password = '';
+        errors.value = {};
+
+        if (response.data['message'] === 'Registration successful') {
+            Inertia.visit(route('pages.home.index'));
+        } else {
+            snackbar.value = {
+                show: true,
+                message: `${response.data['message']}`,
+                color: 'red',
+                timeout: 4000
+            };
+        }
+    } catch (error) {
+        if (error.response && error.response.data.errors) {
+            errors.value = error.response.data.errors;
+
+            // Show error snackbar
+            snackbar.value = {
+                show: true,
+                message: 'Registration failed. Invalid credentials.',
+                color: 'red',
+                timeout: 4000
+            };
+        }
+    }
+};
+
+const navigateToLogin = () => {
+    window.location.href = route('login');
 };
 </script>
 
 <template>
     <GuestLayout>
-        <Head title="Register" />
-
+        <Head title="Register"/>
+        <center>
+            <ApplicationLogo style="width: 300px" class="fill-current text-gray-500 mb-12 mt-8"/>
+        </center>
         <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="first_name" value="First Name" />
-
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.first_name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
-
-                <InputError class="mt-2" :message="form.errors.first_name" />
-            </div>
-
-            <div>
-                <InputLabel for="last_name" value="Last Name" />
-
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.last_name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
-
-                <InputError class="mt-2" :message="form.errors.last_name" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="avatar_upload" value="Upload Avatar" />
-
-                <v-file-input v-model="form.avatar"></v-file-input>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    :href="route('login')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            <v-row>
+                <v-col>
+                    <div class="text-field-label">
+                        First Name
+                    </div>
+                    <v-text-field
+                        v-model="form.first_name"
+                        variant="solo"
+                        density="compact"
+                        required
+                        autofocus
+                        autocomplete="name"
+                        id="name1"
+                        type="text"
+                    ></v-text-field>
+                    <InputError class="mt-2" :message="errors.first_name"/>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <div class="text-field-label">
+                        Last Name
+                    </div>
+                    <v-text-field
+                        v-model="form.last_name"
+                        variant="solo"
+                        density="compact"
+                        required
+                        autocomplete="name"
+                        id="name2"
+                        type="text"
+                    ></v-text-field>
+                    <InputError class="mt-2" :message="errors.last_name"/>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <div class="text-field-label">
+                        Email
+                    </div>
+                    <v-text-field
+                        v-model="form.email"
+                        variant="solo"
+                        density="compact"
+                        required
+                        autocomplete="email"
+                        id="name"
+                        type="text"
+                    ></v-text-field>
+                    <InputError class="mt-2" :message="errors.email"/>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <div class="text-field-label">
+                        Password
+                    </div>
+                    <v-text-field
+                        v-model="form.password"
+                        variant="solo"
+                        density="compact"
+                        required
+                        autocomplete="new-password"
+                        id="password"
+                        type="password"
+                    ></v-text-field>
+                    <InputError class="mt-2" :message="errors.password"/>
+                </v-col>
+            </v-row>
+            <div class="flex items-center justify-end mt-4 mb-7">
+                <v-btn
+                    color="primary"
+                    width="100%"
+                    :loading="false"
+                    :disabled="false"
+                    variant="elevated"
+                    type="submit"
                 >
-                    Already registered?
-                </Link>
-
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Register
-                </PrimaryButton>
+                </v-btn>
+            </div>
+            <div @click="navigateToLogin" class="mb-4" style="cursor: pointer;">
+                <center>
+                    <small class="text-caption text-medium-emphasis" style="font-size: 14px; color: dimgray">
+                        Already registered? Click <u>here</u> to login
+                    </small>
+                </center>
             </div>
         </form>
+
+        <!-- Snackbar implementation -->
+        <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
+            {{ snackbar.message }}
+        </v-snackbar>
     </GuestLayout>
 </template>

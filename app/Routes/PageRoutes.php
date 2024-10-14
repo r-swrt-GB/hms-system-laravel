@@ -35,9 +35,6 @@ class PageRoutes
 
         // Authenticated routes
         Route::middleware('auth:sanctum')->group(function () {
-
-            Route::get('/home', [HomeController::class, 'index'])->name('pages.home.index');
-
             Route::prefix('/modules/{module}')->group(function () {
 
 

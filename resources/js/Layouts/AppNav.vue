@@ -117,9 +117,5 @@ export default {
 </script>
 
 <style>
-.logo-container {
-    background-color: white;
-    padding: 12px;
-    border-bottom: 1px solid lightgrey;
-}
+
 </style>

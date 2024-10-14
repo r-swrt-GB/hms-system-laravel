@@ -78,12 +78,12 @@ class RegisteredUserController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required'],
         ]);
 
         $user = User::where('email', $request['email'])->first();
 
-        if ($user) {
+        if ($user && !$user->hasRole('student')) {
 
             Auth::login($user);
 
@@ -95,26 +95,18 @@ class RegisteredUserController extends Controller
 
             event(new Registered($user));
 
-            if ($request->hasFile('avatar')) {
-                $file = $request->file('avatar');
-
-                $service = new FileUploadService();
-                $service->uploadFile($file, 'avatars', $user->id);
-            }
-
             $token = $user->createToken('authToken')->plainTextToken;
 
             session(['auth_token' => $token]);
 
             return response()->json([
+                'message' => 'Registration successful',
                 'user' => $user,
                 'token' => $token,
             ]);
         }
 
-        return response()->json([
-            'message' => 'Account credentials are invalid.',
-        ]);
+        return response()->json(['message' => 'Registration failed. Credentials are invalid.']);
     }
 
     /**
