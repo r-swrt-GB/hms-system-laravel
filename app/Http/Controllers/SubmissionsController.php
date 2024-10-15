@@ -71,7 +71,7 @@ class SubmissionsController extends Controller
     }
 
 
-    public function getPresignedUrl(Request $request)
+    public function getPresignedUrl(Request $request, Module $module, Assignment $assignment)
     {
         $fileName = $request->input('file_name');
         $contentType = $request->input('content_type');  // e.g., 'video/mp4'
@@ -82,17 +82,17 @@ class SubmissionsController extends Controller
 
         // Create an S3 client instance using the AWS SDK
         $s3Client = new S3Client([
-            'region' => env('AWS_DEFAULT_REGION'),
+            'region' => env('AWS_DEFAULT_REGION') ?? 'us-east-1',
             'version' => 'latest',
             'credentials' => [
-                'key' => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
+                'key' => env('AWS_ACCESS_KEY_ID') ?? 'AKIA2UC3CETXW2VS6VXZ',
+                'secret' => env('AWS_SECRET_ACCESS_KEY') ?? '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',
             ],
         ]);
 
         // Generate the pre-signed URL
         $cmd = $s3Client->getCommand('PutObject', [
-            'Bucket' => env('AWS_BUCKET'),
+            'Bucket' => env('AWS_BUCKET') ?? 'hms-system-nwu',
             'Key' => $filePath,
             'ACL' => 'public-read',  // Set ACL if needed
             'ContentType' => $contentType,
