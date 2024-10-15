@@ -78,6 +78,7 @@ class ApiRoutesV1
                                 Route::delete('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'delete'])->name('api.submissions.delete');
                             });
 
+                            Route::get('/assignments/{assignment}/submissions/create', [SubmissionsController::class, 'getPresignedUrl'])->name('api.submissions.create.signed');
                             //Create
                             Route::post('/assignments/{assignment}/submissions/create', [SubmissionsController::class, 'create'])->name('api.submissions.create');
                             //Read

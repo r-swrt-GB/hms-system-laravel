@@ -8,12 +8,11 @@ use App\Models\File;
 use App\Models\Group;
 use App\Models\Module;
 use App\Models\Submission;
+use Aws\S3\S3Client;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Monolog\Handler\SyslogUdpHandler;
-use PhpParser\Node\Expr\AssignOp\Mod;
 
 class SubmissionsController extends Controller
 {
@@ -69,6 +68,46 @@ class SubmissionsController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred while downloading the file.'], 500);
         }
+    }
+
+
+    public function getPresignedUrl(Request $request)
+    {
+        $fileName = $request->input('file_name');
+        $contentType = $request->input('content_type');  // e.g., 'video/mp4'
+        $filePath = 'videos/' . $fileName;  // Path in your S3 bucket
+
+        // Set expiration time (e.g., 60 minutes)
+        $expiration = Carbon::now()->addMinutes(60);
+
+        // Create an S3 client instance using the AWS SDK
+        $s3Client = new S3Client([
+            'region' => env('AWS_DEFAULT_REGION'),
+            'version' => 'latest',
+            'credentials' => [
+                'key' => env('AWS_ACCESS_KEY_ID'),
+                'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            ],
+        ]);
+
+        // Generate the pre-signed URL
+        $cmd = $s3Client->getCommand('PutObject', [
+            'Bucket' => env('AWS_BUCKET'),
+            'Key' => $filePath,
+            'ACL' => 'public-read',  // Set ACL if needed
+            'ContentType' => $contentType,
+        ]);
+
+        // Create the pre-signed request
+        $request = $s3Client->createPresignedRequest($cmd, $expiration);
+
+        // Get the URL from the pre-signed request
+        $presignedUrl = (string)$request->getUri();
+
+        return response()->json([
+            'url' => $presignedUrl,
+            'filePath' => $filePath,
+        ]);
     }
 
     public function create(Request $request, Module $module, Assignment $assignment)
