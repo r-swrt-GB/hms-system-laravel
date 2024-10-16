@@ -67,7 +67,7 @@ export default {
         },
         secondaryButton: {
             type: Boolean,
-            default: true,
+            default: false,
             required: false,
         },
         actionButtonIcon: {
