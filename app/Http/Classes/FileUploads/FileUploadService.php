@@ -45,7 +45,8 @@ class FileUploadService
             $fileModel->filename = $file['file_name'];
             $fileModel->mimetype = $file['content_type'];
             $fileModel->disk = $this->disk;
-            $fileModel->base_url = $file['file_url'];
+            $fileModel->url = $file['file_url'];
+
             $fileModel->save();
 
             return $fileModel;

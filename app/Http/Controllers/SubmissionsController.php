@@ -140,7 +140,8 @@ class SubmissionsController extends Controller
 
             return response()->json(['submission' => $submission, 'message' => 'Submission created successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred while creating the submission.'], 500);
+            dd($e);
+            return response()->json(['error' => 'An error occurred while creating the submission.', 'errorMessage' => $e], 500);
         }
     }
 

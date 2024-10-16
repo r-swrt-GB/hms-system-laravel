@@ -63,7 +63,7 @@ class Submission extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function users(): BelongsToMany
+    public function user(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_submissions');
     }
