@@ -68,9 +68,9 @@ class Submission extends Model
         return $this->belongsToMany(User::class, 'user_submissions');
     }
 
-    public function assignments(): BelongsToMany
+    public function assignments(): BelongsTo
     {
-        return $this->belongsToMany(Assignment::class);
+        return $this->BelongsTo(Assignment::class);
     }
 
     public function files(): HasMany

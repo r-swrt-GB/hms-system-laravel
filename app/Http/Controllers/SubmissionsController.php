@@ -11,6 +11,7 @@ use App\Models\Submission;
 use Aws\S3\S3Client;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -51,15 +52,26 @@ class SubmissionsController extends Controller
         }
     }
 
-    public function getAssignmentSubmissions(Request $request, Assignment $assignment)
+    public function getAssignmentSubmissions(Request $request, Module $module, Assignment $assignment)
     {
         try {
-            $submissions = $assignment->submissions();
+            // Get the logged-in user
+            $user = auth()->user();
+
+            // Retrieve only the submissions of the logged-in user through the many-to-many relationship
+            $submissions = $assignment->submissions()
+                ->whereHas('user', function($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->get();
+
             return response()->json(['submissions' => $submissions]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred while fetching submissions.'], 500);
         }
     }
+
+
 
     public function downloadFile(File $file, FileUploadService $fileUploadService)
     {
