@@ -63,6 +63,7 @@ class SubmissionsController extends Controller
                 ->whereHas('user', function($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
+                ->with('files')
                 ->get();
 
             return response()->json(['submissions' => $submissions]);
