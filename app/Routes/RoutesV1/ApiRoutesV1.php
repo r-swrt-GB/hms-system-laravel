@@ -84,7 +84,7 @@ class ApiRoutesV1
                             //Read
                             Route::get('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'read'])->name('api.submissions.read');
                             //Update
-                            Route::patch('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'update'])->name('api.submissions.update');
+                            Route::patch('/assignments/{assignment}/submissions/{submission}', [SubmissionsController::class, 'gradeSubmission'])->name('api.submissions.update');
                         });
 
 

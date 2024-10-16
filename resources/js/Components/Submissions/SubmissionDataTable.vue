@@ -19,7 +19,7 @@
         </thead>
         <tbody>
         <tr v-for="submission in filteredSubmissions" :key="submission.id">
-          <td>{{ submission.users[0].first_name + ' ' + submission.users[0].last_name }}</td>
+          <td>{{ submission.user[0].first_name + ' ' + submission.user[0].last_name }}</td>
           <td>{{ formatDate(submission.submission_date) }}</td>
           <td>{{ submission.grade ?? 'Not graded' }}</td>
           <td>
@@ -69,8 +69,8 @@ export default {
       }
       const query = this.searchQuery.toLowerCase();
       return this.submissions.filter(submission =>
-          submission.users[0].first_name.toLowerCase().includes(query) ||
-          submission.users[0].last_name.toLowerCase().includes(query) ||
+          submission.user[0].first_name.toLowerCase().includes(query) ||
+          submission.user[0].last_name.toLowerCase().includes(query) ||
           submission.submission_date.toLowerCase().includes(query) ||
           submission.grade.toLowerCase().includes(query) ||
           submission.due_date.toLowerCase().includes(query)

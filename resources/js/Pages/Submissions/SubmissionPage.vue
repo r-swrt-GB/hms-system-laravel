@@ -1,15 +1,10 @@
 <template>
     <v-toolbar height="91" color="primary">
-        <!--        <img-->
-        <!--            src="/assets/images/nwu-logo.png"-->
-        <!--            class="mr-4"-->
-        <!--            style="height: 91px; background-color: white; padding: 12px"-->
-        <!--         alt=""></img>-->
         <v-btn type="icon" @click="goBack">
             <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <v-toolbar-title>{{
-                submission.users[0].first_name + ' ' + submission.users[0].last_name + ' - Submission'
+                submission.user[0].first_name + ' ' + submission.user[0].last_name + ' - Submission'
             }}
         </v-toolbar-title>
         <v-spacer></v-spacer>
@@ -93,7 +88,7 @@
                             <v-col cols="6">
                                 <div class="text-field-label">Student Full Name</div>
                                 <h1 style="font-size: 15px">
-                                    {{ submission.users[0].first_name + ' ' + submission.users[0].last_name }}</h1>
+                                    {{ submission.user[0].first_name + ' ' + submission.user[0].last_name }}</h1>
                             </v-col>
                             <v-col cols="6">
                                 <div class="text-field-label">Submission Date</div>
@@ -121,26 +116,25 @@
                                 <div class="text-field-label">Select a video</div>
                                 <v-select
                                     v-model="selectedVideo"
-                                    :items="submission.files"
-                                    item-title="filename"
+                                    :items="attachmentItems"
+                                    item-title="text"
                                     item-value="key"
                                     @update:model-value="changeVideo"
                                     variant="outlined"
                                     hide-details
                                     class="mb-4 custom-select"
                                     style="font-size: 1rem"
-                                >
-                                </v-select>
+                                ></v-select>
                             </v-col>
                         </v-row>
                         <v-row>
                             <v-col cols="12">
-                                <video-player
+                                <video
                                     ref="videoPlayer"
-                                    :options="playerOptions"
-                                    style="width: 100%;"
-                                    height="400"
-                                ></video-player>
+                                    :src="currentVideoSrc"
+                                    controls
+                                    style="width: 100%; max-height: 400px;"
+                                ></video>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -152,7 +146,7 @@
                         <v-toolbar-title>Comments Section</v-toolbar-title>
                     </v-toolbar>
                     <v-card-text>
-                        <v-row v-if="comments.length === 0">
+                        <v-row v-if="submission.comments.length === 0">
                             <v-col cols="12">
                                 <h1 class="data-display" style="color: grey">
                                     No Comments
@@ -160,17 +154,10 @@
                             </v-col>
                         </v-row>
                         <v-list v-else>
-                            <v-list-item v-for="comment in comments" :key="comment.id">
-                                <v-list-item-title>{{ comment.user.name }}</v-list-item-title>
-                                <v-list-item-subtitle>{{ comment.content }}</v-list-item-subtitle>
-                                <v-list-item-action>
-                                    <v-btn type="icon" @click="editComment(comment)">
-                                        <v-icon>mdi-pencil</v-icon>
-                                    </v-btn>
-                                    <v-btn type="icon" @click="deleteComment(comment.id)">
-                                        <v-icon>mdi-delete</v-icon>
-                                    </v-btn>
-                                </v-list-item-action>
+                            <v-list-item v-for="comment in submission.comments" :key="comment.id">
+                                <v-list-item-title>{{ comment.user.first_name + ' ' + comment.user.last_name }}
+                                </v-list-item-title>
+                                <v-list-item-subtitle>{{ comment.comment_text }}</v-list-item-subtitle>
                             </v-list-item>
                         </v-list>
 
@@ -208,7 +195,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-btn @click="showGradeDialog = false">Cancel</v-btn>
-                    <v-btn @click="submitGrade" color="primary">Submit Grade</v-btn>
+                    <v-btn @click="submitGrade" color="primary" type="solo">Submit Grade</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -239,12 +226,7 @@ export default {
     data() {
         return {
             selectedVideo: null,
-            playerOptions: {
-                autoplay: false,
-                controls: true,
-                sources: []
-            },
-            comments: [],
+            currentVideoSrc: '',
             newComment: '',
             snackbar: {
                 show: false,
@@ -256,14 +238,31 @@ export default {
             gradeInput: null
         };
     },
-    mounted() {
-        this.fetchComments();
-        if (this.submission.videos && this.submission.videos.length > 0) {
-            this.selectedVideo = this.submission.videos[0].url;
-            this.changeVideo();
+    computed: {
+        attachmentItems() {
+            return this.submission.files.map((file, index) => ({
+                text: `Attachment ${index + 1}`,
+                key: file.key,
+                url: file.url
+            }));
         }
     },
+    mounted() {
+        this.initializeVideo();
+    },
     methods: {
+        initializeVideo() {
+            if (this.attachmentItems.length > 0) {
+                this.selectedVideo = this.attachmentItems[0].key;
+                this.changeVideo();
+            }
+        },
+        changeVideo() {
+            const selectedFile = this.attachmentItems.find(item => item.key === this.selectedVideo);
+            if (selectedFile) {
+                this.currentVideoSrc = selectedFile.url;
+            }
+        },
         goBack() {
             window.history.back();
         },
@@ -282,23 +281,16 @@ export default {
 
             return `${year}-${month}-${day} at ${hours}:${minutes}`;
         },
-        changeVideo() {
-            this.playerOptions.sources = [{type: "video/mp4", src: this.selectedVideo}];
-        },
-        async fetchComments() {
-            try {
-                const response = await axios.get(`/api/submissions/${this.submission.id}/comments`);
-                this.comments = response.data;
-            } catch (error) {
-                console.error('Error fetching comments:', error);
-                this.showSnackbar('Error fetching comments', 'error');
-            }
-        },
         async addComment() {
             try {
-                await axios.post(`/api/submissions/${this.submission.id}/comments`, {content: this.newComment});
+                await axios.post(route('api.comments.create', {
+                        module: this.module.id,
+                        assignment: this.assignment.id,
+                        submission: this.submission.id,
+                        comment_text: this.newComment,
+                    })
+                )
                 this.newComment = '';
-                await this.fetchComments();
                 this.showSnackbar('Comment added successfully');
             } catch (error) {
                 console.error('Error adding comment:', error);
@@ -311,7 +303,6 @@ export default {
         async deleteComment(commentId) {
             try {
                 await axios.delete(`/api/comments/${commentId}`);
-                await this.fetchComments();
                 this.showSnackbar('Comment deleted successfully');
             } catch (error) {
                 console.error('Error deleting comment:', error);
@@ -319,11 +310,25 @@ export default {
             }
         },
         async submitGrade() {
+            if (this.gradeInput > this.assignment.max_grade) {
+                this.showSnackbar(`Max grade is ${this.assignment.max_grade}`, 'error');
+                return;
+            } else if (this.gradeInput < 0) {
+                this.showSnackbar(`Grade cannot be negative`, 'error');
+                return;
+            }
+
             try {
-                await axios.post(`/api/submissions/${this.submission.id}/grade`, {grade: this.gradeInput});
+                await axios.patch(route('api.submissions.update', {
+                        module: this.module.id,
+                        assignment: this.assignment.id,
+                        submission: this.submission.id,
+                        grade: this.gradeInput
+                    })
+                );
                 this.submission.grade = this.gradeInput;
                 this.showGradeDialog = false;
-                this.showSnackbar('Grade submitted successfully');
+                this.showSnackbar('Submission graded successfully');
             } catch (error) {
                 console.error('Error submitting grade:', error);
                 this.showSnackbar('Error submitting grade', 'error');

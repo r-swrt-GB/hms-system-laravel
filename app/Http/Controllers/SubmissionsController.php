@@ -19,7 +19,7 @@ class SubmissionsController extends Controller
 {
     public function index(Request $request, Module $module, Assignment $assignment)
     {
-        $submissions = $assignment->submissions()->with('users')->get();
+        $submissions = $assignment->submissions()->with('user')->get()->toArray();
 
         return Inertia::render('Submissions/SubmissionsPage', [
             'module' => $module,
@@ -31,14 +31,16 @@ class SubmissionsController extends Controller
     public function getSubmissionPage(Request $request, Module $module, Assignment $assignment, Submission $submission)
     {
         try {
-            $submission = $submission->load(['users', 'comments', 'files']);
+            $submission = $submission->load(['user', 'comments.user', 'files'])->toArray();
             return Inertia::render('Submissions/SubmissionPage', [
                 'module' => $module,
                 'assignment' => $assignment,
                 'submission' => $submission,
             ]);
         } catch (\Exception $e) {
-            return Inertia::render('Error', ['message' => 'An error occurred while fetching the submission.']);
+            return Inertia::render('Error', [
+                'message' => 'An error occurred while fetching the submission. Please try again later.',
+            ]);
         }
     }
 
@@ -153,8 +155,23 @@ class SubmissionsController extends Controller
 
             return response()->json(['submission' => $submission, 'message' => 'Submission created successfully.']);
         } catch (\Exception $e) {
-            dd($e);
             return response()->json(['error' => 'An error occurred while creating the submission.', 'errorMessage' => $e], 500);
+        }
+    }
+
+    public function gradeSubmission(Request $request, Module $module, Assignment $assignment, Submission $submission)
+    {
+        try {
+            $validatedData = $request->validate([
+                'grade' => 'required',
+            ]);
+
+            $submission->grade = $validatedData['grade'];
+            $submission->save();
+
+            return response()->json(['message' => 'Submission updated successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while updating the submission.'], 500);
         }
     }
 
@@ -195,6 +212,8 @@ class SubmissionsController extends Controller
             return response()->json(['error' => 'An error occurred while updating the submission.'], 500);
         }
     }
+
+
 
     public function delete(Request $request, Module $module, Assignment $assignment, Submission $submission)
     {
