@@ -65,10 +65,10 @@ class SubmissionsController extends Controller
                 ->whereHas('user', function($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
-                ->with('files')
+                ->with(['files','comments.user'])
                 ->get();
 
-            return response()->json(['submissions' => $submissions]);
+            return response()->json(['submissions' => $submissions->toArray()]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred while fetching submissions.'], 500);
         }
