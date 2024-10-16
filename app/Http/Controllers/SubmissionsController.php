@@ -132,9 +132,11 @@ class SubmissionsController extends Controller
             }
 
             $fileUploadService = new FileUploadService();
-            foreach ($request->file('files') as $file) {
-                $fileUploadService->uploadFile($file, 'submissions', $submission->id);
+            foreach ($request->get('files') as $file) {
+                $fileUploadService->saveFile($file, $submission->id);
             }
+
+            $submission = $submission->with('files')->find($submission->id);
 
             return response()->json(['submission' => $submission, 'message' => 'Submission created successfully.']);
         } catch (\Exception $e) {

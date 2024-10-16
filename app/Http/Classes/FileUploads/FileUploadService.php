@@ -37,6 +37,23 @@ class FileUploadService
         }
     }
 
+    public function saveFile($file, int $submissionId): File
+    {
+        try {
+            $fileModel = new File();
+            $fileModel->submission_id = $submissionId;
+            $fileModel->filename = $file['file_name'];
+            $fileModel->mimetype = $file['content_type'];
+            $fileModel->disk = $this->disk;
+            $fileModel->base_url = $file['file_url'];
+            $fileModel->save();
+
+            return $fileModel;
+        } catch (\Exception $e) {
+            throw new \Exception('File upload failed. Please try again.' . $e->getMessage());
+        }
+    }
+
     /**
      * Download a file from storage.
      *
