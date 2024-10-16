@@ -20,6 +20,7 @@
                 <submission-data-table
                     :assignment="assignment"
                     :submissions="submissions"
+                    @export-all="exportAll"
                     @delete-submission="showDeleteDialog"
                     @view-assignment-details="showAssignmentInformationDialog"
                     @view-submission="viewSubmission"
@@ -115,6 +116,25 @@ export default {
         showDeleteDialog(submission) {
             this.selectedSubmission = submission;
             this.deleteSubmissionDialog = true;
+        },
+        async exportAll() {
+            try {
+                const url = route(`api.assignments.export`, {
+                    module: this.module,
+                    assignment: this.assignment
+                });
+
+                window.location.href = url;
+
+                this.snackbar.message = "Assignment exported successfully";
+                this.snackbar.color = "success";
+                this.snackbar.show = true;
+            } catch (error) {
+                console.log(error);
+                this.snackbar.message = error.response?.data?.errors || "Failed to export Assignment";
+                this.snackbar.color = "error";
+                this.snackbar.show = true;
+            }
         },
         viewSubmission(submission) {
             Inertia.visit(route('pages.submission', {

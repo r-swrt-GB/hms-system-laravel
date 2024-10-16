@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AssignmentMarksExport;
 use App\Models\Assignment;
 use App\Models\Group;
 use App\Models\Module;
 use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AssignmentsController extends Controller
 {
@@ -18,7 +21,28 @@ class AssignmentsController extends Controller
     {
         $module->load('assignments');
 
-        return Inertia::render('Assignments/AssignmentsPage', ['module' => $module]);
+        $users = User::all();
+
+        $students = $users->filter(function ($user) {
+            return $user->hasRole('student');
+        });
+
+        $students = $students->map(function ($student) use ($module) {
+            $student->has_module = $student->modules()->where('module_id', $module->id)->exists();
+            return $student;
+        });
+
+        return Inertia::render('Assignments/AssignmentsPage', [
+            'module' => $module,
+            'students' => $students->toArray(),
+        ]);
+    }
+
+    public function export(Request $request, Module $module, Assignment $assignment)
+    {
+        $fileName = 'assignment_marks_' . $assignment->title . '.xlsx';
+
+        return Excel::download(new AssignmentMarksExport($assignment), $fileName);
     }
 
     public function getModuleAssignments(Request $request, Module $module)

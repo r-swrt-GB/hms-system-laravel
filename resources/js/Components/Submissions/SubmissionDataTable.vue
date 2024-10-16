@@ -2,8 +2,10 @@
   <DataTableExplorerBaseline
       :search-enabled="true"
       :action-button-icon="false"
+      :secondary-button="true"
       @add="viewAssignmentDetails"
       @search="onSearch"
+      @export="exportAll"
   >
     <template v-slot:toolbar-title>Submissions for {{ assignment.title }}</template>
     <template v-slot:add-library-item-action>Assignment Details</template>
@@ -45,7 +47,7 @@ import DataTableExplorerBaseline from "@/Components/BaselineComponents/BaselineD
 
 export default {
   name: 'SubmissionDataTable',
-  emits: ['viewSubmission', 'deleteSubmission', 'viewAssignmentDetails'],
+  emits: ['viewSubmission', 'deleteSubmission', 'viewAssignmentDetails','exportAll'],
   components: {
     DataTableExplorerBaseline
   },
@@ -90,6 +92,10 @@ export default {
     viewAssignmentDetails() {
       this.$emit('viewAssignmentDetails');
     },
+      exportAll() {
+          console.log(2);
+          this.$emit('exportAll');
+      },
     formatDate(date) {
       date = new Date(date);
       const year = date.getFullYear();

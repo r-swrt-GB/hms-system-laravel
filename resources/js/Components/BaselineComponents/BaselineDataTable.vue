@@ -21,11 +21,22 @@
                     <v-spacer></v-spacer>
                     <div style="padding-right: 20px">
                         <v-btn
+                            v-if="secondaryButton"
+                            variant="flat"
+                            color="primary"
+                            @click="exportAll"
+                            style="margin-right: 20px">
+                            <v-icon class="pr-1">mdi-export</v-icon>
+                            Export
+                        </v-btn>
+                        <v-btn
                             v-if="actionButton"
                             variant="flat"
                             color="primary"
                             @click="onAddLibraryItem">
-                            <v-icon class="pr-1">{{ actionButtonIcon ? 'mdi-plus-box-multiple' : 'mdi-information-outline' }}</v-icon>
+                            <v-icon class="pr-1">
+                                {{ actionButtonIcon ? 'mdi-plus-box-multiple' : 'mdi-information-outline' }}
+                            </v-icon>
                             <slot name="add-library-item-action"></slot>
                         </v-btn>
                     </div>
@@ -44,6 +55,7 @@
 
 export default {
     name: "DataTableExplorerBaseline",
+    emits: ['add', 'search', 'export'],
     props: {
         searchEnabled: {
             type: Boolean,
@@ -52,6 +64,11 @@ export default {
         actionButton: {
             type: Boolean,
             default: true,
+        },
+        secondaryButton: {
+            type: Boolean,
+            default: true,
+            required: false,
         },
         actionButtonIcon: {
             type: Boolean,
@@ -74,6 +91,9 @@ export default {
         },
         onAddLibraryItem() {
             this.$emit('add');
+        },
+        exportAll() {
+            this.$emit('export');
         },
     },
 }

@@ -49,6 +49,11 @@ class ApiRoutesV1
                     // Module Specific requests
                     Route::prefix('/{module}')->group(function () {
 
+                        Route::middleware('lecturer')->group(function () {
+                            //Post
+                            Route::post('/sync-students', [ModuleManagementController::class, 'modifyModuleStudents'])->name('api.modules.students.sync');
+                        });
+
                         //Notifications
                         Route::middleware('student')->group(function () {
                             Route::middleware('lecturer')->group(function () {
@@ -91,6 +96,8 @@ class ApiRoutesV1
                         //Assignments
                         Route::middleware('student')->group(function () {
                             Route::middleware('lecturer')->group(function () {
+                                //Export
+                                Route::get('/assignments/{assignment}/export', [AssignmentsController::class, 'export'])->name('api.assignments.export');
                                 //Create
                                 Route::post('/assignments/', [AssignmentsController::class, 'create'])->name('api.assignments.create');
                                 //Update

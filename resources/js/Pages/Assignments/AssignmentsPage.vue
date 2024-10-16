@@ -14,44 +14,61 @@
         <v-spacer></v-spacer>
 
     </v-toolbar>
-    <v-container style="padding: 50px">
-        <v-row>
-            <v-col>
-                <assignments-data-table
-                    :module="module"
-                    :assignments="module.assignments"
-                    @add-assignment="showDialog"
-                    @delete-assignment="showDeleteAssignmentDialog"
-                    @edit-assignment="showDialog"
-                    @view-assignment="viewAssignment"
-                ></assignments-data-table>
+    <v-container style="padding: 20px">
+        <v-tabs v-model="activeTab">
+            <v-tab value="assignments">Assignments</v-tab>
+            <v-tab value="students">Students</v-tab>
+        </v-tabs>
 
-                <assignment-form-dialog
-                    v-model="assignmentFormDialog"
-                    :update="isUpdate"
-                    :open-date="openDate"
-                    :due-date="dueDate"
-                    :assignment="locallySelectedAssignment"
-                    @add-assignment="addAssignment"
-                    @dialog-closed="closeDialog"
-                    @edit-save-assignment="editAssignmentSave"
-                    @show-due-date-picker="showDuePicker"
-                    @show-open-date-picker="showOpenPicker"
-                ></assignment-form-dialog>
+        <v-window v-model="activeTab">
+            <v-window-item value="assignments" style="padding: 40px 40px 40px 0;">
+                <v-row>
+                    <v-col>
+                        <assignments-data-table
+                            :module="module"
+                            :assignments="module.assignments"
+                            @add-assignment="showDialog"
+                            @delete-assignment="showDeleteAssignmentDialog"
+                            @edit-assignment="showDialog"
+                            @view-assignment="viewAssignment"
+                        ></assignments-data-table>
 
-                <assignments-delete-dialog
-                    v-model="deleteAssignmentDialog"
-                    :assignment="selectedAssignment"
-                    @dialog-closed="closeDeleteDialog"
-                    @delete-assignment-clicked="deleteAssignment"
-                ></assignments-delete-dialog>
+                        <assignment-form-dialog
+                            v-model="assignmentFormDialog"
+                            :update="isUpdate"
+                            :open-date="openDate"
+                            :due-date="dueDate"
+                            :assignment="locallySelectedAssignment"
+                            @add-assignment="addAssignment"
+                            @dialog-closed="closeDialog"
+                            @edit-save-assignment="editAssignmentSave"
+                            @show-due-date-picker="showDuePicker"
+                            @show-open-date-picker="showOpenPicker"
+                        ></assignment-form-dialog>
 
-                <!-- Snacbar Dialog -->
-                <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
-                    {{ snackbar.message }}
-                </v-snackbar>
-            </v-col>
-        </v-row>
+                        <assignments-delete-dialog
+                            v-model="deleteAssignmentDialog"
+                            :assignment="selectedAssignment"
+                            @dialog-closed="closeDeleteDialog"
+                            @delete-assignment-clicked="deleteAssignment"
+                        ></assignments-delete-dialog>
+                    </v-col>
+                </v-row>
+            </v-window-item>
+
+            <v-window-item value="students" style="padding: 40px 40px 40px 0;">
+                <v-row>
+                    <v-col>
+                        <student-module-data-table :students="students" :module="module"></student-module-data-table>
+                    </v-col>
+                </v-row>
+            </v-window-item>
+        </v-window>
+
+        <!-- Snackbar Dialog -->
+        <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
+            {{ snackbar.message }}
+        </v-snackbar>
     </v-container>
 
     <v-dialog v-model="dueDatePicker"
@@ -83,17 +100,25 @@ import AssignmentFormDialog from "@/Components/Assignments/AssignmentFormDialog.
 import DeleteModuleDialog from "@/Components/Management/ModuleManagement/DeleteModuleDialog.vue";
 import AssignmentsDeleteDialog from "@/Components/Assignments/AssignmentsDeleteDialog.vue";
 import {Inertia} from "@inertiajs/inertia";
+import StudentModuleDataTable from "@/Components/Management/StudentModuleDataTable.vue";
 
 export default {
     name: 'AssignmentsPage',
-    components: {AssignmentsDeleteDialog, DeleteModuleDialog, AssignmentFormDialog, AssignmentsDataTable},
+    components: {
+        StudentModuleDataTable,
+        AssignmentsDeleteDialog, DeleteModuleDialog, AssignmentFormDialog, AssignmentsDataTable
+    },
     props: {
         module: {
+            required: true
+        },
+        students: {
             required: true
         }
     },
     data() {
         return {
+            activeTab: 'assignments',
             dueDatePicker: false,
             openDatePicker: false,
             dueDatePickedValue: null,

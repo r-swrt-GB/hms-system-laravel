@@ -48,7 +48,7 @@ import DataTableExplorerBaseline from "@/Components/BaselineComponents/BaselineD
 
 export default {
     name: 'AssignmentsDataTable',
-    emits: ['viewAssignment', 'editAssignment', 'deleteAssignment', 'addAssignment'],
+    emits: ['viewAssignment', 'editAssignment', 'deleteAssignment', 'addAssignment', 'exportAll'],
     components: {
         DataTableExplorerBaseline
     },

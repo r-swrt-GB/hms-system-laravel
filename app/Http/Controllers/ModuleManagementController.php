@@ -24,6 +24,25 @@ class ModuleManagementController extends Controller
         return Inertia::render('Management/ModuleManagementPage', ['appBarHeader' => 'Module Management', 'modules' => $modules, 'users' => $users]);
     }
 
+    public function modifyModuleStudents(Request $request, Module $module)
+    {
+        $validated = $request->validate([
+            'enrolledStudents' => 'required|array',
+        ]);
+
+        $enrolledStudents = $validated['enrolledStudents'];
+
+        $enrolledStudents[] = Auth::id();
+
+        $module->users()->sync($enrolledStudents);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Module students have been updated successfully.',
+        ]);
+    }
+
+
     public function list(Request $request)
     {
         try {
