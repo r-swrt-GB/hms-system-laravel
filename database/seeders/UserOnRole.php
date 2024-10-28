@@ -12,7 +12,7 @@ class UserOnRole extends Seeder
     {
         $adminRoleId = DB::table('roles')->where('slug', 'admin')->value('id');
 
-        $userIds = [1, 2, 3, 4];
+        $userIds = [1, 2, 3, 4, 5];
 
         foreach ($userIds as $userId) {
             DB::table('user_role')->insert([
@@ -23,7 +23,7 @@ class UserOnRole extends Seeder
 
         $studentRoleId = DB::table('roles')->where('slug', 'student')->value('id');
 
-        $userIds = [5, 6, 7, 8,];
+        $userIds = [6, 7, 8,];
 
         foreach ($userIds as $userId) {
             DB::table('user_role')->insert([
