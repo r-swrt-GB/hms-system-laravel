@@ -10,17 +10,36 @@ class UserOnRole extends Seeder
 {
     public function run()
     {
-        // Get the 'Admin' role ID
         $adminRoleId = DB::table('roles')->where('slug', 'admin')->value('id');
 
-        // Get the IDs of the first 4 users
-        $userIds = DB::table('users')->limit(4)->pluck('id');
+        $userIds = [1, 2, 3, 4];
 
-        // Insert into the user_role table
         foreach ($userIds as $userId) {
             DB::table('user_role')->insert([
                 'user_id' => $userId,
                 'role_id' => $adminRoleId,
+            ]);
+        }
+
+        $studentRoleId = DB::table('roles')->where('slug', 'student')->value('id');
+
+        $userIds = [5, 6, 7, 8,];
+
+        foreach ($userIds as $userId) {
+            DB::table('user_role')->insert([
+                'user_id' => $userId,
+                'role_id' => $studentRoleId,
+            ]);
+        }
+
+        $lecturerRoleId = DB::table('roles')->where('slug', 'lecturer')->value('id');
+
+        $lecturers = [9, 10,];
+
+        foreach ($lecturers as $userId) {
+            DB::table('user_role')->insert([
+                'user_id' => $userId,
+                'role_id' => $lecturerRoleId,
             ]);
         }
     }

@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
             RightSeeder::class,
             RoleOnRightSeeder::class,
             UserOnRole::class,
+            UserOnModule::class,
+            UserOnAssignment::class,
+            UserOnNotification::class,
         ]);
     }
 }

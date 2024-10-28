@@ -49,9 +49,19 @@
             <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
             <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn>
-                <v-icon>mdi-account-circle</v-icon>
-            </v-btn>
+
+            <v-menu>
+                <template v-slot:activator="{ props }">
+                    <v-btn @click="toggleMenu" v-bind="props">
+                        <v-icon>mdi-account-circle</v-icon>
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item @click="logout">
+                        <v-list-item-title>Logout</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
         </v-app-bar>
 
         <!-- Main Content -->
@@ -62,7 +72,7 @@
 </template>
 
 <script>
-import { Inertia } from '@inertiajs/inertia';
+import {Inertia} from '@inertiajs/inertia';
 
 export default {
     name: 'AppNav',
@@ -76,6 +86,7 @@ export default {
     data() {
         return {
             drawer: true,
+            menuVisible: false, // Control visibility of the menu
             menuItems: [
                 {
                     title: 'User Management',
@@ -109,8 +120,14 @@ export default {
         toggleDrawer() {
             this.drawer = !this.drawer;
         },
+        toggleMenu() {
+            this.menuVisible = !this.menuVisible;
+        },
         navigateTo(path) {
             Inertia.visit(path);
+        },
+        logout() {
+            Inertia.post(route('logout'));
         },
     },
 };
