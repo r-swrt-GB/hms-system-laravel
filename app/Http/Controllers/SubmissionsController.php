@@ -97,17 +97,17 @@ class SubmissionsController extends Controller
 
         // Create an S3 client instance using the AWS SDK
         $s3Client = new S3Client([
-            'region' => env('AWS_DEFAULT_REGION') ?? 'us-east-1',
+            'region' => env('AWS_DEFAULT_REGION'),
             'version' => 'latest',
             'credentials' => [
-                'key' => env('AWS_ACCESS_KEY_ID') ?? 'AKIA2UC3CETXW2VS6VXZ',
-                'secret' => env('AWS_SECRET_ACCESS_KEY') ?? '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',
+                'key' => env('AWS_ACCESS_KEY_ID'),
+                'secret' => env('AWS_SECRET_ACCESS_KEY'),
             ],
         ]);
 
         // Generate the pre-signed URL
         $cmd = $s3Client->getCommand('PutObject', [
-            'Bucket' => env('AWS_BUCKET') ?? 'hms-system-nwu',
+            'Bucket' => env('AWS_BUCKET'),
             'Key' => $filePath,
             'ACL' => 'public-read',  // Set ACL if needed
             'ContentType' => $contentType,
